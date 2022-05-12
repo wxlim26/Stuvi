@@ -1,4 +1,4 @@
-# Stuvi
+# STUVI
 Orbital Project STUVI
 
 Group : LWXSS
