@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "813440182919",
+    "project_id": "stuvi-b3f9d",
+    "storage_bucket": "stuvi-b3f9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813440182919:android:de4727e12022f48c59e622",
+        "android_client_info": {
+          "package_name": "com.example.STUVI_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813440182919-pq6g2d2kfp2hs48fmnapmds4effc7mt0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.STUVI_app",
+            "certificate_hash": "445763c9776a27ab262a6e3179a3cdd595340c0e"
+          }
+        },
+        {
+          "client_id": "813440182919-inaugc257755b9obt5voqp11g29ql60n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhD_i-swcvnKHYYMPaDpXcJXITxb5gKQ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "813440182919-inaugc257755b9obt5voqp11g29ql60n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
