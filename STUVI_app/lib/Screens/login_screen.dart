@@ -1,9 +1,10 @@
+import 'package:STUVI_app/Screens/task_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:STUVI_app/Screens/registration_screen.dart';
 
-import 'home_screen.dart';
+import 'home_screen.dart'; // For old login screen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -174,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
             .then((uid) => {
                   Fluttertoast.showToast(msg: "Login Successful"),
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => HomeScreen())),
+                      MaterialPageRoute(builder: (context) => HomePage())),
                 });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
