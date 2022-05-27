@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:STUVI_app/Screens/registration_screen.dart';
 
-import 'home_screen.dart'; // For old login screen
+//import 'home_screen.dart'; // For old login screen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

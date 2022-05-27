@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:STUVI_app/model/todo.dart';
 
+import '../API/firebase_api.dart';
+
 class TodosProvider extends ChangeNotifier {
   List<Todo> _todos = [];
 
@@ -9,25 +11,26 @@ class TodosProvider extends ChangeNotifier {
   List<Todo> get todosCompleted =>
       _todos.where((todo) => todo.isDone == true).toList();
 
-  void addTodo(Todo todo) {
-    _todos.add(todo);
-    notifyListeners();
-  }
+  void setTodos(List<Todo> todos) =>
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _todos = todos;
+        notifyListeners();
+      });
 
-  void removeTodo(Todo todo) {
-    _todos.remove(todo);
-    notifyListeners();
-  }
+  void addTodo(Todo todo, String uid) => FirebaseApi.createTodo(todo, uid);
+
+  void removeTodo(Todo todo) => FirebaseApi.deleteTodo(todo);
 
   bool toggleTodoStatus(Todo todo) {
     todo.isDone = !todo.isDone;
-    notifyListeners();
+    FirebaseApi.updateTodo(todo);
     return todo.isDone;
   }
 
   void updateTodo(Todo todo, String title, String description) {
     todo.title = title;
     todo.description = description;
-    notifyListeners();
+
+    FirebaseApi.updateTodo(todo);
   }
 }
