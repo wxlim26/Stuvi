@@ -1,3 +1,4 @@
+import 'package:STUVI_app/Screens/countdown_page.dart';
 import 'package:STUVI_app/model/todo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -27,22 +28,11 @@ class _HomePageState extends State<HomePage> {
     //Todo Page and Completed Page
     final tabs = [
       TodoListWidget(), // Todo container
-      CompletedListWidget(), // Completed container
+      CompletedListWidget(),
+      CountdownPage(), // Completed container
     ];
 
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Color(0xFF2A93D5),
-          title: Text(
-            'Task Manager',
-            style: GoogleFonts.oxygen(),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(40.0),
-            ),
-          ),
-          centerTitle: true),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.white.withOpacity(0.7),
@@ -60,6 +50,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.done, size: 28),
             label: 'Completed',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.visibility, size: 28),
+            label: 'Focus Mode',
           ),
         ],
       ),

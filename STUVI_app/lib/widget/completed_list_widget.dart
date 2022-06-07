@@ -10,23 +10,32 @@ class CompletedListWidget extends StatelessWidget {
     final provider = Provider.of<TodosProvider>(context);
     final todos = provider.todosCompleted;
 
-    return todos.isEmpty
-        ? Center(
-            child: Text(
-              'No completed tasks.',
-              style: GoogleFonts.oxygen(),
-            ),
-          )
-        : ListView.separated(
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.all(16),
-            separatorBuilder: (context, index) => Container(height: 8),
-            itemCount: todos.length,
-            itemBuilder: (context, index) {
-              final todo = todos[index];
+    return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Color(0xFF3FC5F0),
+          title: Text(
+            'Daily Planner',
+            style: TextStyle(color: Colors.white),
+          ),
+          centerTitle: true),
+      body: todos.isEmpty
+          ? Center(
+              child: Text(
+                'No completed tasks.',
+                style: GoogleFonts.oxygen(),
+              ),
+            )
+          : ListView.separated(
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.all(16),
+              separatorBuilder: (context, index) => Container(height: 8),
+              itemCount: todos.length,
+              itemBuilder: (context, index) {
+                final todo = todos[index];
 
-              return TodoWidget(todo: todo);
-            },
-          );
+                return TodoWidget(todo: todo);
+              },
+            ),
+    );
   }
 }
