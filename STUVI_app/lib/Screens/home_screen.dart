@@ -32,7 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Task Manager"),
+        backgroundColor: Color(0xFF3FC5F0),
+        title: Text("Home Page"),
         centerTitle: true,
       ),
       body: Center(

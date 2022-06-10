@@ -1,3 +1,4 @@
+import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -286,6 +287,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     User? user = _auth.currentUser;
 
     UserModel userModel = UserModel();
+    UserStatsModel stats = UserStatsModel();
 
     // writing all the values
     userModel.email = user!.email;
@@ -293,11 +295,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     userModel.firstName = firstNameEditingController.text;
     userModel.secondName = secondNameEditingController.text;
 
+    //writing values for user Stats
+    stats.uid = user.uid;
+    stats.exp = 0;
+
     await firebaseFirestore
         .collection("users")
         .doc(user.uid)
         .set(userModel.toMap());
     Fluttertoast.showToast(msg: "Account created successfully :) ");
+
+    await firebaseFirestore
+        .collection("UserStats")
+        .doc(user.uid)
+        .set(stats.toMap());
 
     Navigator.pushAndRemoveUntil((context),
         MaterialPageRoute(builder: (context) => HomePage()), (route) => false);

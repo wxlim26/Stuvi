@@ -9,7 +9,8 @@ import 'package:STUVI_app/widget/todo_list_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:STUVI_app/Screens/login_screen.dart';
 import 'package:provider/provider.dart';
-
+import 'package:STUVI_app/Screens/home_screen.dart';
+import 'package:STUVI_app/Screens/profile_page.dart';
 import '../API/firebase_api.dart';
 import '../provider/todos.dart';
 
@@ -28,13 +29,16 @@ class _HomePageState extends State<HomePage> {
     //Todo Page and Completed Page
     final tabs = [
       TodoListWidget(), // Todo container
-      CompletedListWidget(),
-      CountdownPage(), // Completed container
+      CompletedListWidget(), // Completed container
+      CountdownPage(), // FOcus mode
+      ProfilePage(), // Profile Page
+      //HomeScreen(),
     ];
 
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).primaryColor,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.blue,
         unselectedItemColor: Colors.white.withOpacity(0.7),
         selectedItemColor: Colors.white,
         currentIndex: selectedIndex,
@@ -55,6 +59,10 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.visibility, size: 28),
             label: 'Focus Mode',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, size: 28),
+            label: 'Profile',
+          ),
         ],
       ),
       body: StreamBuilder<List<Todo>>(
@@ -66,6 +74,8 @@ class _HomePageState extends State<HomePage> {
             default:
               if (snapshot.hasError) {
                 return buildText('Something Went Wrong Try later');
+              } else if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
               } else {
                 final todos = snapshot.data;
 
