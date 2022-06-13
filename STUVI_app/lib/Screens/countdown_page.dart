@@ -1,3 +1,8 @@
+import 'package:STUVI_app/model/user_model.dart';
+import 'package:STUVI_app/model/user_stats_model.dart';
+import 'package:STUVI_app/provider/stats.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:STUVI_app/widget/done_button_widget.dart';
 import 'dart:async';
@@ -11,6 +16,10 @@ class CountdownPage extends StatefulWidget {
 }
 
 class _CountdownPageState extends State<CountdownPage> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+  UserStatsModel stats = UserStatsModel();
+
   Duration duration = Duration();
   Timer? timer;
   bool paused = true;
@@ -18,6 +27,23 @@ class _CountdownPageState extends State<CountdownPage> {
   @override
   void initState() {
     super.initState();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
+
+    FirebaseFirestore.instance
+        .collection("UserStats")
+        .doc(user!.uid)
+        .get()
+        .then((DocumentSnapshot doc) {
+      this.stats = UserStatsModel.fromMap(doc.data());
+      setState(() {});
+    });
   }
 
   void addTime() {
@@ -98,6 +124,7 @@ class _CountdownPageState extends State<CountdownPage> {
               ),
               const SizedBox(width: 12),
               DoneButtonWidget(onClicked: () {
+                StatsProvider().increaseExp(stats, duration.inSeconds);
                 stopTimer();
               })
             ],
