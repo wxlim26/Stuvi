@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import 'package:STUVI_app/Screens/login_screen.dart';
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -18,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   UserStatsModel stats = UserStatsModel();
   String? initials;
   num? level;
+  num? xp;
 
   @override
   void initState() {
@@ -42,6 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
       this.stats = UserStatsModel.fromMap(doc.data());
       setState(() {
         level = (stats.exp! / 500).floor();
+        xp = stats.exp!;
       });
     });
   }
@@ -51,6 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
     //var firstName = loggedInUser.firstName![0];
     //var secondName = loggedInUser.secondName![0];
     //var initials = 'firstName + secondName';
+
     bool isLoading = false;
     if (initials == null || level == null) {
       isLoading = true;
@@ -61,19 +65,26 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         : Scaffold(
             appBar: AppBar(
-              backgroundColor: Color(0xFF3FC5F0),
-              title: Text("Home Page"),
+              backgroundColor: Colors.white,
+              title: Text(
+                "${loggedInUser.firstName} ${loggedInUser.secondName}",
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
               centerTitle: true,
             ),
             body: ListView(
               children: <Widget>[
                 Container(
-                  height: 250,
+                  height: 300,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.blue, Colors.blueAccent.shade400],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
+                      colors: [Colors.blue, Colors.blueAccent.shade100],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                       stops: [0.5, 0.9],
                     ),
                   ),
@@ -86,28 +97,59 @@ class _ProfilePageState extends State<ProfilePage> {
                         minRadius: 50.0,
                         child: CircleAvatar(
                           radius: 50.0,
-                          child: Text(initials!),
+                          child: Text(
+                            initials!,
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(
-                        height: 15,
+                        height: 10,
                       ),
                       Text(
-                        "${loggedInUser.firstName} ${loggedInUser.secondName}",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        'Level : ${level}',
+                        'Title: Recruit', // Replace with ENUM
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                         ),
                       ),
                       SizedBox(height: 10),
+                      Wrap(
+                        spacing: 210,
+                        children: [
+                          Text(
+                            'Level : ${level}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                          ),
+                          Text(
+                            '${xp} / ${(level! + 1) * 500}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+                        child: LinearPercentIndicator(
+                          percent: (xp!.toDouble() - (level! * 500)) / 500,
+                          //percent: 300 / 500,
+                          progressColor: Colors.greenAccent,
+                          backgroundColor: Colors.white,
+                          lineHeight: 10.0,
+                          barRadius: const Radius.circular(15),
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
                       ActionChip(
                         backgroundColor: Color(0xFF3FC5F0),
                         label: Text(
@@ -120,6 +162,21 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  '    Achievements',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                  ),
+                ),
+                Divider(thickness: 2),
+                SizedBox(height: 10),
+                Container(
+                  height: 300,
+                  child: Text(
+                      'Achievements will be here... Replace with achievements widget once done'), // Replace with achievements widget
                 ),
               ],
             ),

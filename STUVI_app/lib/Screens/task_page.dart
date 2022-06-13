@@ -9,7 +9,7 @@ import 'package:STUVI_app/widget/todo_list_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:STUVI_app/Screens/login_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:STUVI_app/Screens/home_screen.dart';
+//import 'package:STUVI_app/Screens/home_screen.dart';
 import 'package:STUVI_app/Screens/profile_page.dart';
 import '../API/firebase_api.dart';
 import '../provider/todos.dart';
