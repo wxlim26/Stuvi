@@ -5,6 +5,8 @@ import 'package:STUVI_app/Screens/login_screen.dart';
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:STUVI_app/widget/achievements_progress_view_widget.dart';
+import 'package:STUVI_app/Achievements/achievement.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -175,9 +177,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 10),
                 Container(
                   height: 300,
-                  child: Text(
-                      'Achievements will be here... Replace with achievements widget once done'), // Replace with achievements widget
-                ),
+                  child: AchievementsProgressView(
+                    achievements: Achievement.getList(
+                        //level!
+                        level!,
+                        Achievement.levelAchievements()),
+                  ),
+                )
               ],
             ),
           );
