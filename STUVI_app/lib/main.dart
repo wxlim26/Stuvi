@@ -24,9 +24,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Email and Password Login',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
+          theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Oxygen'),
           home: LoginScreen(),
         ),
       );

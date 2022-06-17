@@ -39,7 +39,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       validator: (value) {
         RegExp regex = new RegExp(r'^.{3,}$');
         if (value!.isEmpty) {
-          return ("First Name cannot be Empty");
+          return ("First Name cannot be empty");
         }
         if (!regex.hasMatch(value)) {
           return ("Enter Valid name(Min. 3 Character)");
@@ -51,12 +51,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next, // goes to next field
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.account_circle_rounded),
+        filled: true,
+        fillColor: Color(0xFFEBEBEB),
+        prefixIcon: Icon(Icons.person),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Enter First Name",
+        hintStyle: TextStyle(color: Color(0xFF808080)),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 0, style: BorderStyle.none)),
       ),
     );
 
@@ -67,7 +70,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       keyboardType: TextInputType.name,
       validator: (value) {
         if (value!.isEmpty) {
-          return ("Second Name cannot be Empty");
+          return ("Second Name cannot be empty");
         }
         return null;
       },
@@ -76,12 +79,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next, // goes to next field
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.account_circle_rounded),
+        filled: true,
+        fillColor: Color(0xFFEBEBEB),
+        prefixIcon: Icon(Icons.person),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Enter Second Name",
+        hintStyle: TextStyle(color: Color(0xFF808080)),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 0, style: BorderStyle.none)),
       ),
     );
 
@@ -92,7 +98,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value!.isEmpty) {
-          return ("Please Enter Your Email");
+          return ("Please enter your Email");
         }
         // reg expression for email validation
         if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)) {
@@ -105,12 +111,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next, // goes to next field
       decoration: InputDecoration(
+        filled: true,
+        fillColor: Color(0xFFEBEBEB),
         prefixIcon: Icon(Icons.mail),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Enter Email",
+        hintStyle: TextStyle(color: Color(0xFF808080)),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 0, style: BorderStyle.none)),
       ),
     );
 
@@ -134,12 +143,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next, // goes to next field
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.vpn_key_rounded),
+        filled: true,
+        fillColor: Color(0xFFEBEBEB),
+        prefixIcon: Icon(Icons.lock),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Enter Password",
+        hintStyle: TextStyle(color: Color(0xFF808080)),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 0, style: BorderStyle.none)),
       ),
     );
 
@@ -160,19 +172,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.done, // goes to next field
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.vpn_key_rounded),
+        filled: true,
+        fillColor: Color(0xFFEBEBEB),
+        prefixIcon: Icon(Icons.lock),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Confirm Password",
+        hintStyle: TextStyle(color: Color(0xFF808080)),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(width: 0, style: BorderStyle.none)),
       ),
     );
 
+    //Sign up button
     final signUpButton = Material(
       elevation: 5,
-      borderRadius: BorderRadius.circular(30),
-      color: Color(0xFF3FC5F0),
+      borderRadius: BorderRadius.circular(40),
+      color: Color(0xFF31AFE1),
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
         minWidth: MediaQuery.of(context).size.width,
@@ -183,23 +199,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           "Sign Up",
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+              fontSize: 15, color: Colors.white, fontFamily: 'OxygenBold'),
         ),
       ),
     );
 
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Color(0xFF3FC5F0),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          )),
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
@@ -214,8 +219,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
-                      height: 250,
-                      child: Image.asset("assets/orbital_logo.jpg",
+                      height: 300,
+                      child: Image.asset("assets/STUVI_Logo.png",
                           fit: BoxFit.contain),
                     ),
                     firstNameField,
@@ -227,9 +232,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     passwordField,
                     SizedBox(height: 15),
                     confirmPasswordField,
-                    SizedBox(height: 20),
+                    SizedBox(height: 15),
                     signUpButton,
-                    SizedBox(height: 30),
+                    SizedBox(height: 15),
                   ],
                 ),
               ),

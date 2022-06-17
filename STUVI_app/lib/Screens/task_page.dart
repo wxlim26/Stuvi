@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     final tabs = [
       TodoListWidget(), // Todo container
       CompletedListWidget(), // Completed container
-      CountdownPage(), // FOcus mode
+      CountdownPage(), // Focus mode
       ProfilePage(), // Profile Page
       //HomeScreen(),
     ];

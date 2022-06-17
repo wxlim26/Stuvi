@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 100,
                 child:
-                    Image.asset("assets/orbital_logo.jpg", fit: BoxFit.contain),
+                    Image.asset("assets/STUVI_Logo.png", fit: BoxFit.contain),
               ),
               Text(
                 "Welcome Back",
