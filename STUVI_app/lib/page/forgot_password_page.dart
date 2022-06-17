@@ -1,30 +1,21 @@
-import 'package:STUVI_app/Screens/task_page.dart';
+import 'package:STUVI_app/Screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:STUVI_app/Screens/registration_screen.dart';
 
-import '../page/forgot_password_page.dart';
-
-//import 'home_screen.dart'; // For old login screen
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   // form key
   final _formKey = GlobalKey<FormState>();
 
-  // editing controller [ email and password ]
+  // editing controller [ email ]
   final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-
-  //firebase
-  final _auth = FirebaseAuth.instance;
 
   //String for error Message
   String? errorMessage;
@@ -38,11 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value!.isEmpty) {
-          return "Please enter your Email Address";
+          return "Please Enter Your Email Address";
         }
         // reg expression for email validation
         if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)) {
-          return ("Please enter a valid email");
+          return ("Please Enter a valid email");
         }
         return null;
       }, //if we want to validate email address
@@ -64,80 +55,21 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
-    // password field
-    final passwordField = TextFormField(
-      obscureText:
-          true, // If we dont want to show users password as they are typing
-      autofocus: false,
-      controller: passwordController,
-      keyboardType: TextInputType.emailAddress,
-      validator: (value) {
-        // Minimum 6 characters for Firebase password
-        RegExp regex = new RegExp(r'^.{6,}$');
-        if (value!.isEmpty) {
-          return ("Password is required for login");
-        }
-        if (!regex.hasMatch(value)) {
-          return ("Enter Valid Password(Min. 6 Character)");
-        }
-        return null;
-      }, //if we want to validate email address
-      onSaved: (value) {
-        passwordController.text = value!;
-      },
-      textInputAction: TextInputAction.done, // no next field
-      style: TextStyle(fontFamily: 'OxygenLight'),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFFEBEBEB),
-        prefixIcon: Icon(Icons.lock),
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Enter Password",
-        hintStyle: TextStyle(color: Color(0xFF808080)),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(width: 0, style: BorderStyle.none),
-        ),
-      ),
-    );
-
-    final forgotPassword =
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-      GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return ForgotPasswordPage();
-                },
-              ),
-            );
-          },
-          child: Text('Forgot Password?',
+    // reset password button
+    final resetPasswordButton = Material(
+        elevation: 5,
+        borderRadius: BorderRadius.circular(40),
+        color: Color(0xFF31AFE1),
+        child: MaterialButton(
+            onPressed: passwordReset,
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+            minWidth: MediaQuery.of(context).size.width,
+            child: Text(
+              'Reset Password',
+              textAlign: TextAlign.center,
               style: TextStyle(
-                  fontFamily: 'OxygenBold', color: Color(0xFF31AFE1))))
-    ]);
-
-    // loginbutton
-    final loginButton = Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(40),
-      color: Color(0xFF31AFE1),
-      child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-        minWidth: MediaQuery.of(context).size.width,
-        onPressed: () {
-          signIn(emailController.text, passwordController.text);
-        }, // Replace with the save to database
-        child: Text(
-          "Login",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 15, color: Colors.white, fontFamily: 'OxygenBold'),
-        ),
-      ),
-    );
+                  fontSize: 15, color: Colors.white, fontFamily: 'OxygenBold'),
+            )));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -158,36 +90,36 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Image.asset("assets/STUVI_Logo.png",
                           fit: BoxFit.contain),
                     ),
-                    emailField,
+                    Text(
+                        'Enter your email and we will send you instructions on how to reset your password.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 15)),
                     SizedBox(height: 15), // separating the fields
-                    passwordField,
+                    emailField,
                     SizedBox(height: 15),
-                    forgotPassword,
-                    SizedBox(height: 15),
-                    loginButton,
+                    resetPasswordButton,
                     SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('Dont have an account?'),
+                        Text('Back to'),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: ((context) =>
-                                        RegistrationScreen())));
+                                    builder: ((context) => LoginScreen())));
                           },
                           child: Text(
-                            ' Sign up',
+                            ' Login Page',
                             style: TextStyle(
                                 color: Color(0xFF31AFE1),
                                 fontFamily: 'OxygenBold',
                                 fontSize: 15),
                           ),
-                        )
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -198,17 +130,31 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  //Login Function
-  void signIn(String email, String password) async {
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
+
+//Reset password Function
+  Future passwordReset() async {
     if (_formKey.currentState!.validate()) {
       try {
-        await _auth
-            .signInWithEmailAndPassword(email: email, password: password)
-            .then((uid) => {
-                  Fluttertoast.showToast(msg: "Login Successful"),
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => HomePage())),
-                });
+        await FirebaseAuth.instance
+            .sendPasswordResetEmail(email: emailController.text.trim());
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              content: Text(
+                'Password reset link has been sent, please check your email.',
+                textAlign: TextAlign.center,
+              ),
+            );
+          },
+        );
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
           case "invalid-email":
