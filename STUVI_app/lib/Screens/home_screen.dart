@@ -1,89 +1,76 @@
+import 'dart:developer';
+
+import 'package:STUVI_app/Screens/add_task_page.dart';
+import 'package:STUVI_app/Screens/countdown_page.dart';
+import 'package:STUVI_app/Screens/home_page.dart';
+import 'package:STUVI_app/model/todo.dart';
+import 'package:STUVI_app/widget/todo_form_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:STUVI_app/widget/add_todo_widget.dart';
+import 'package:STUVI_app/widget/completed_list_widget.dart';
+import 'package:STUVI_app/widget/todo_list_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import "package:flutter/material.dart";
 import 'package:STUVI_app/Screens/login_screen.dart';
-import 'package:STUVI_app/model/user_model.dart';
+import 'package:provider/provider.dart';
+//import 'package:STUVI_app/Screens/home_screen.dart';
+import 'package:STUVI_app/Screens/profile_page.dart';
+import '../API/firebase_api.dart';
+import '../provider/todos.dart';
+import 'package:STUVI_app/Screens/friends_page.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int selectedIndex = 0; // 0 means first tab in the bottom navigation bar
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel();
 
-  @override
-  void initState() {
-    super.initState();
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      this.loggedInUser = UserModel.fromMap(value.data());
-      setState(() {});
-    });
-  }
+  // different pages in navigation bottom bar
+  final screens = [
+    HomePage(),
+    CountdownPage(), // Focus mode
+    AddTaskWidget(),
+    FriendsPage(),
+    ProfilePage()
+  ];
 
+  // different icons for navigation bottom bar
   @override
   Widget build(BuildContext context) {
+    final items = <Widget>[
+      Icon(Icons.home),
+      Icon(Icons.visibility),
+      Icon(Icons.add),
+      Icon(Icons.group_rounded),
+      Icon(Icons.person),
+    ];
+
+    //navigation bottom bar
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF3FC5F0),
-        title: Text("Home Page"),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 100,
-                child:
-                    Image.asset("assets/STUVI_Logo.png", fit: BoxFit.contain),
-              ),
-              Text(
-                "Welcome Back",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text("${loggedInUser.firstName} ${loggedInUser.secondName}",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                  )),
-              Text("${loggedInUser.email}",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                  )),
-              SizedBox(height: 15),
-              ActionChip(
-                backgroundColor: Color(0xFF3FC5F0),
-                label: Text(
-                  "Logout",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  logout(context);
-                },
-              ),
-            ],
-          ),
+      extendBody: true,
+      backgroundColor: Colors.white,
+      body: screens[selectedIndex],
+      bottomNavigationBar: Theme(
+        data: Theme.of(context)
+            .copyWith(iconTheme: IconThemeData(color: Colors.white)),
+        child: CurvedNavigationBar(
+          color: Color(0xFF31AFE1),
+          backgroundColor: Colors.transparent,
+          height: 60,
+          items: items,
+          index: selectedIndex,
+          onTap: (index) => setState(() => this.selectedIndex = index),
+          animationDuration: Duration(milliseconds: 300),
         ),
       ),
     );
-  }
-
-  Future<void> logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: ((context) => LoginScreen())));
   }
 }

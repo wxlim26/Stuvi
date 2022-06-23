@@ -1,3 +1,4 @@
+import 'package:STUVI_app/Screens/home_screen.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -315,7 +316,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         .doc(user.uid)
         .set(stats.toMap());
 
-    Navigator.pushAndRemoveUntil((context),
-        MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+        (context),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (route) => false);
   }
 }

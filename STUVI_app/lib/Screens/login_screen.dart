@@ -1,8 +1,10 @@
+import 'package:STUVI_app/Screens/home_page.dart';
 import 'package:STUVI_app/Screens/task_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:STUVI_app/Screens/registration_screen.dart';
+import 'package:STUVI_app/Screens/home_screen.dart';
 
 import '../page/forgot_password_page.dart';
 
@@ -169,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('Dont have an account?'),
+                        Text("Don't have an account?"),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -207,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
             .then((uid) => {
                   Fluttertoast.showToast(msg: "Login Successful"),
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => HomePage())),
+                      MaterialPageRoute(builder: (context) => HomeScreen())),
                 });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {

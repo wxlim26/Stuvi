@@ -11,13 +11,7 @@ class CompletedListWidget extends StatelessWidget {
     final todos = provider.todosCompleted;
 
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Color(0xFF3FC5F0),
-          title: Text(
-            'Daily Planner',
-            style: TextStyle(color: Colors.white),
-          ),
-          centerTitle: true),
+      backgroundColor: Colors.white,
       body: todos.isEmpty
           ? Center(
               child: Text(
