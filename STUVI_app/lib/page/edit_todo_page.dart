@@ -1,3 +1,5 @@
+import 'dart:developer';
+import 'package:STUVI_app/Screens/add_task_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:STUVI_app/model/todo.dart';
@@ -15,6 +17,7 @@ class EditTodoPage extends StatefulWidget {
 class _EditTodoPageState extends State<EditTodoPage> {
   final _formKey = GlobalKey<FormState>();
   String title = '';
+  String startTime = '';
   String description = '';
 
   @override
@@ -23,6 +26,7 @@ class _EditTodoPageState extends State<EditTodoPage> {
     super.initState();
 
     title = widget.todo.title;
+    startTime = widget.todo.startTime;
     description = widget.todo.description;
   }
 
@@ -47,13 +51,16 @@ class _EditTodoPageState extends State<EditTodoPage> {
           padding: EdgeInsets.all(16),
           child: Form(
             key: _formKey,
-            child: TodoFormWidget(
-              title: title,
+            child: AddTaskPage(
+              title: 'title',
+              startTime: startTime,
               description: description,
               onChangedTitle: (title) => setState(() => this.title = title),
+              onChangedStartTime: (time) =>
+                  setState(() => this.startTime = startTime),
               onChangedDescription: (description) =>
                   setState(() => this.description = description),
-              onSavedTodo: saveTodo,
+              onSavedToDo: saveTodo,
             ),
           ),
         ),
@@ -66,6 +73,8 @@ class _EditTodoPageState extends State<EditTodoPage> {
       return;
     } else {
       final provider = Provider.of<TodosProvider>(context, listen: false);
+      log('asd');
+      log(title);
       provider.updateTodo(widget.todo, title, description);
       Navigator.of(context).pop();
     }

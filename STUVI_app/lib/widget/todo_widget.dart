@@ -40,50 +40,80 @@ class TodoWidget extends StatelessWidget {
             child: buildTodo(context)),
       );
 
-  Widget buildTodo(BuildContext context) => Container(
+  Widget buildTodo(BuildContext context) {
+    final checkbox = Checkbox(
+      activeColor: Colors.white,
+      checkColor: Color(0xFF31AFE1),
+      value: todo.isDone,
+      onChanged: (_) {
+        final provider = Provider.of<TodosProvider>(context, listen: false);
+        final isDone = provider.toggleTodoStatus(todo);
+
+        Utils.showSnackBar(
+          context,
+          isDone ? 'Task Completed' : 'Task marked Incomplete',
+        );
+      },
+    );
+
+    final titleText = Text(
+      todo.title,
+      style: TextStyle(
+        fontFamily: "OxygenBold",
         color: Colors.white,
+        fontSize: 18,
+      ),
+    );
+
+    final timeText = Text(
+      '(' + todo.startTime + ')',
+      style: TextStyle(
+        fontFamily: "OxygenBold",
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    );
+
+    final descriptionText = Container(
+      margin: EdgeInsets.only(top: 4),
+      child: Text(
+        todo.description,
+        style: TextStyle(color: Colors.white, fontSize: 15, height: 1.5),
+      ),
+    );
+
+    return Theme(
+      data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF2A93D5), Color(0XFF37CAEC)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.1, 0.9],
+          ),
+        ),
         padding: EdgeInsets.all(20),
         child: Row(
           children: [
-            Checkbox(
-                activeColor: Color(0xFF3FC5F0),
-                checkColor: Colors.white,
-                value: todo.isDone,
-                onChanged: (_) {
-                  final provider =
-                      Provider.of<TodosProvider>(context, listen: false);
-                  final isDone = provider.toggleTodoStatus(todo);
-
-                  Utils.showSnackBar(
-                    context,
-                    isDone ? 'Task completed' : 'Task marked incomplete',
-                  );
-                }),
-            const SizedBox(width: 20),
+            SizedBox(width: 50),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    todo.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 22,
-                    ),
-                  ),
-                  if (todo.description.isNotEmpty)
-                    Container(
-                      margin: EdgeInsets.only(top: 4),
-                      child: Text(todo.description,
-                          style: TextStyle(fontSize: 20, height: 1.5)),
-                    )
+                  titleText,
+                  // if (todo.startTime.isNotEmpty)
+                  timeText,
+                  if (todo.description.isNotEmpty) descriptionText,
                 ],
               ),
             ),
+            checkbox
           ],
         ),
-      );
+      ),
+    );
+  }
 
   void deleteTodo(BuildContext context, Todo todo) {
     final provider = Provider.of<TodosProvider>(context, listen: false);

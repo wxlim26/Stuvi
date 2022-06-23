@@ -11,13 +11,7 @@ class TodoListWidget extends StatelessWidget {
     final todos = provider.todos;
 
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Color(0xFF3FC5F0),
-          title: Text(
-            'Daily Planner',
-            style: TextStyle(color: Colors.white),
-          ),
-          centerTitle: true),
+      backgroundColor: Colors.white,
       body: todos.isEmpty
           ? Center(
               child: Text(
@@ -27,7 +21,7 @@ class TodoListWidget extends StatelessWidget {
             )
           : ListView.separated(
               physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(15),
               separatorBuilder: (context, index) => Container(
                 height: 8,
               ),

@@ -9,12 +9,14 @@ class Todo {
   String title;
   String uid;
   String id;
+  String startTime;
   String description;
   bool isDone;
 
   Todo({
     required this.createdTime,
     required this.title,
+    this.startTime = '',
     this.description = '',
     required this.uid,
     required this.id,
@@ -24,6 +26,7 @@ class Todo {
   static Todo fromJson(Map<String, dynamic> json) => Todo(
         createdTime: Utils.toDateTime(json['createdTime']),
         title: json['title'],
+        startTime: json['startTime'],
         description: json['description'],
         uid: json['uid'],
         id: json['id'],
@@ -33,6 +36,7 @@ class Todo {
   Map<String, dynamic> toJson() => {
         'createdTime': Utils.fromDateTimeToJson(createdTime),
         'title': title,
+        'startTime': startTime,
         'description': description,
         'uid': uid,
         'id': id,

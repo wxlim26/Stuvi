@@ -84,10 +84,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 300,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.blue, Colors.blueAccent.shade100],
+                      colors: [Color(0xFF2A93D5), Color(0XFF37CAEC)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      stops: [0.5, 0.9],
+                      stops: [0.1, 0.9],
                     ),
                   ),
                   child: Column(
