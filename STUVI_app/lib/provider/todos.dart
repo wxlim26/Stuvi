@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:STUVI_app/model/todo.dart';
-
 import '../API/firebase_api.dart';
 
 class TodosProvider extends ChangeNotifier {
@@ -21,15 +20,31 @@ class TodosProvider extends ChangeNotifier {
 
   void removeTodo(Todo todo) => FirebaseApi.deleteTodo(todo);
 
+  void removeToDoList(List selectedToDoList) =>
+      FirebaseApi.deleteTodoList(selectedToDoList);
+
   bool toggleTodoStatus(Todo todo) {
     todo.isDone = !todo.isDone;
     FirebaseApi.updateTodo(todo);
     return todo.isDone;
   }
 
-  void updateTodo(Todo todo, String title, String description) {
+  bool toggleTodoStatusList(List selectedToDoList) {
+    for (var i = selectedToDoList.length - 1; i >= 0; i--) {
+      Todo selectedTask = selectedToDoList[i];
+      selectedTask.isDone = !selectedTask.isDone;
+      FirebaseApi.updateTodo(selectedTask);
+    }
+    return true;
+  }
+
+  void updateTodo(Todo todo, String title, String description, int date,
+      String startTime, String emoji) {
     todo.title = title;
     todo.description = description;
+    todo.date = date;
+    todo.startTime = startTime;
+    todo.emoji = emoji;
 
     FirebaseApi.updateTodo(todo);
   }

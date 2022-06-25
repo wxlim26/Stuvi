@@ -85,13 +85,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  datetime_picker_formfield:
-    dependency: "direct main"
-    description:
-      name: datetime_picker_formfield
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   emoji_picker_flutter:
     dependency: "direct main"
     description:
@@ -226,6 +219,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
+  liquid_progress_indicator:
+    dependency: "direct main"
+    description:
+      name: liquid_progress_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   matcher:
     dependency: transitive
     description:
@@ -247,6 +247,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  multi_select_flutter:
+    dependency: "direct main"
+    description:
+      name: multi_select_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.2"
   nested:
     dependency: transitive
     description:
@@ -448,6 +455,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.9"
+  timezone:
+    dependency: "direct main"
+    description:
+      name: timezone
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.0"
   typed_data:
     dependency: transitive
     description:

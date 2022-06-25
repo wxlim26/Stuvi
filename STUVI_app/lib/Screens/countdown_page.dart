@@ -76,94 +76,124 @@ class _CountdownPageState extends State<CountdownPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Color(0xFF3FC5F0),
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Text(
-            'Focus Mode',
-            style: TextStyle(color: Colors.black),
+  Widget build(BuildContext context) {
+    final appBar = AppBar(
+      elevation: 5,
+      backgroundColor: Colors.white,
+      title: Text(
+        'Focus Mode',
+        style: TextStyle(
+            fontSize: 20, color: Colors.black, fontFamily: 'OxygenBold'),
+      ),
+      centerTitle: true,
+    );
+
+    Widget buildButtons() {
+      final isRunning = timer == null ? false : timer!.isActive;
+      final isCompleted = duration.inSeconds == 0;
+      return isRunning || !isCompleted
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      paused = !paused;
+                    });
+                    if (isRunning) {
+                      stopTimer(resets: false);
+                    } else {
+                      startTimer(resets: false);
+                    }
+                  },
+                  backgroundColor: Colors.white,
+                  child:
+                      //paused ? Icon(Icons.pause) : Icon(Icons.play_arrow_rounded),
+                      Icon(
+                          (paused == true)
+                              ? Icons.pause
+                              : Icons.play_arrow_rounded,
+                          color: Color(0xFF31AFE1)),
+                ),
+                const SizedBox(width: 12),
+                DoneButtonWidget(onClicked: () {
+                  StatsProvider().increaseExp(stats, duration.inSeconds);
+                  stopTimer();
+                })
+              ],
+            )
+          : PlayButtonWidget(
+              onClicked: () {
+                startTimer();
+              },
+            );
+    }
+
+    Widget buildTime() {
+      String twoDigits(int n) =>
+          n.toString().padLeft(2, '0'); // Ensure 2 digits
+      final hours = twoDigits(duration.inHours.remainder(60));
+      final minutes = twoDigits(duration.inMinutes.remainder(60));
+      final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+      return Column(
+        children: <Widget>[
+          SizedBox(height: 100),
+          Text(
+            '$hours:$minutes:$seconds',
+            style: TextStyle(
+                fontFamily: "OxygenLight", fontSize: 60, color: Colors.white),
           ),
-          centerTitle: true,
+          Text(
+            'Time Spent Being Focused',
+            style: TextStyle(
+                fontFamily: "OxygenLight", fontSize: 20, color: Colors.white),
+          ),
+        ],
+      );
+    }
+
+    // For a rounded circle
+    Widget buildTimer() {
+      return SizedBox(
+        width: 300,
+        height: 300,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            CircularProgressIndicator(
+              value: duration.inSeconds.remainder(60) / 60,
+              valueColor: AlwaysStoppedAnimation(Colors.white),
+              backgroundColor: Colors.transparent,
+            ),
+            Center(child: buildTime()),
+          ],
         ),
-        body: Center(
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: Color(0xFF3FC5F0),
+      appBar: appBar,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF2A93D5),
+              Color(0XFF37CAEC),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.1, 0.9],
+          ),
+        ),
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [buildTimer(), SizedBox(height: 40), buildButtons()],
           ),
         ),
-      );
-
-  Widget buildButtons() {
-    final isRunning = timer == null ? false : timer!.isActive;
-    final isCompleted = duration.inSeconds == 0;
-    return isRunning || !isCompleted
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FloatingActionButton(
-                onPressed: () {
-                  setState(() {
-                    paused = !paused;
-                  });
-                  if (isRunning) {
-                    stopTimer(resets: false);
-                  } else {
-                    startTimer(resets: false);
-                  }
-                },
-                backgroundColor: Colors.white,
-                child:
-                    //paused ? Icon(Icons.pause) : Icon(Icons.play_arrow_rounded),
-                    Icon(
-                        (paused == true)
-                            ? Icons.pause
-                            : Icons.play_arrow_rounded,
-                        color: Color(0xFF3FC5F0)),
-              ),
-              const SizedBox(width: 12),
-              DoneButtonWidget(onClicked: () {
-                StatsProvider().increaseExp(stats, duration.inSeconds);
-                stopTimer();
-              })
-            ],
-          )
-        : PlayButtonWidget(
-            onClicked: () {
-              startTimer();
-            },
-          );
-  }
-
-  Widget buildTime() {
-    String twoDigits(int n) => n.toString().padLeft(2, '0'); // Ensure 2 digits
-    final hours = twoDigits(duration.inHours.remainder(60));
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-    return Text(
-      '$hours:$minutes:$seconds',
-      style: TextStyle(
-          fontWeight: FontWeight.normal, fontSize: 60, color: Colors.white),
-    );
-  }
-
-  // For a rounded circle
-  Widget buildTimer() {
-    return SizedBox(
-      width: 300,
-      height: 300,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          CircularProgressIndicator(
-            value: duration.inSeconds.remainder(60) / 60,
-            valueColor: AlwaysStoppedAnimation(Colors.white),
-            backgroundColor: Colors.blue,
-          ),
-          Center(child: buildTime()),
-        ],
       ),
     );
   }

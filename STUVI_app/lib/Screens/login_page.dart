@@ -1,14 +1,9 @@
-import 'package:STUVI_app/Screens/home_page.dart';
-import 'package:STUVI_app/Screens/task_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:STUVI_app/Screens/registration_screen.dart';
+import 'package:STUVI_app/Screens/registration_page.dart';
 import 'package:STUVI_app/Screens/home_screen.dart';
-
 import '../page/forgot_password_page.dart';
-
-//import 'home_screen.dart'; // For old login screen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

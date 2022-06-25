@@ -14,6 +14,6 @@ class PlayButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) => FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: onClicked,
-        child: Icon(Icons.play_arrow_rounded, color: Color(0xFF3FC5F0)),
+        child: Icon(Icons.play_arrow_rounded, color: Color(0xFF31AFE1)),
       );
 }

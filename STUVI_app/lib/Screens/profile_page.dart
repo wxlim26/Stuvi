@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
-import 'package:STUVI_app/Screens/login_screen.dart';
+import 'package:STUVI_app/Screens/login_page.dart';
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
         .then((value) {
       this.loggedInUser = UserModel.fromMap(value.data());
       setState(() {
-        initials = loggedInUser.firstName![0] + loggedInUser.secondName![0];
+        initials = loggedInUser.firstName![0] + loggedInUser.lastName![0];
         initials = initials!.toUpperCase();
       });
     });
@@ -54,8 +54,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     //var firstName = loggedInUser.firstName![0];
-    //var secondName = loggedInUser.secondName![0];
-    //var initials = 'firstName + secondName';
+    //var lastName = loggedInUser.lastName![0];
+    //var initials = 'firstName + lastName';
 
     bool isLoading = false;
     if (initials == null || level == null) {
@@ -69,9 +69,9 @@ class _ProfilePageState extends State<ProfilePage> {
             appBar: AppBar(
               backgroundColor: Colors.white,
               title: Text(
-                "${loggedInUser.firstName} ${loggedInUser.secondName}",
+                "${loggedInUser.firstName} ${loggedInUser.lastName}",
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
