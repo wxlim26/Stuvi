@@ -1,16 +1,24 @@
-import 'dart:developer';
-
 import 'package:STUVI_app/Screens/add_task_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:STUVI_app/provider/todos.dart';
-import 'package:STUVI_app/widget/todo_form_widget.dart';
 import 'package:STUVI_app/model/todo.dart';
 import 'package:STUVI_app/model/user_model.dart';
 
 class AddTaskWidget extends StatefulWidget {
+  final Function(TextEditingController) onShowEmojiKeyboard;
+  final Function() onHideEmojiKeyboard;
+  final String emojis;
+
+  const AddTaskWidget({
+    Key? key,
+    required this.onShowEmojiKeyboard,
+    required this.onHideEmojiKeyboard,
+    required this.emojis,
+  }) : super(key: key);
+
   @override
   _AddTaskWidgetState createState() => _AddTaskWidgetState();
 }
@@ -21,6 +29,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
   String title = '';
   String startTime = '';
   String description = '';
+  int date = 0;
+  String emoji = '';
 
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
@@ -41,20 +51,20 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
   @override
   Widget build(BuildContext context) {
     void addTodo() {
-      log("asdasd");
       final isValid = _formKey.currentState!.validate();
 
       if (!isValid) {
         return;
       } else {
         final todo = Todo(
-          id: DateTime.now().toString(),
-          uid: loggedInUser.uid!,
-          title: this.title,
-          startTime: this.startTime,
-          description: this.description,
-          createdTime: DateTime.now(),
-        );
+            id: DateTime.now().toString(),
+            uid: loggedInUser.uid!,
+            title: this.title,
+            startTime: this.startTime,
+            description: this.description,
+            createdTime: DateTime.now(),
+            emoji: widget.emojis,
+            date: this.date);
 
         final provider = Provider.of<TodosProvider>(context, listen: false);
         provider.addTodo(todo, user!.uid);
@@ -73,6 +83,12 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
             onChangedStartTime: (time) => setState(() => this.startTime = time),
             onChangedDescription: (description) =>
                 setState(() => this.description = description),
+            onChangedDate: (date) => setState(() => this.date = date),
+            // onChangedEmoji: (description) =>
+            //     setState(() => this.emoji = description),
+            onShowEmojiKeyboard: (TextEditingController controller) =>
+                {widget.onShowEmojiKeyboard(controller)},
+            onHideEmojiKeyboard: () => widget.onHideEmojiKeyboard(),
             onSavedToDo: addTodo,
           ),
         ],

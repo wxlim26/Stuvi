@@ -4,9 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:STUVI_app/Screens/home_screen.dart'; // for old login screen
-import 'package:STUVI_app/Screens/task_page.dart';
-
 import '../model/user_model.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -25,7 +22,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   //editing controllers
   final firstNameEditingController = new TextEditingController();
-  final secondNameEditingController = new TextEditingController();
+  final lastNameEditingController = new TextEditingController();
   final emailEditingController = new TextEditingController();
   final passwordEditingController = new TextEditingController();
   final confirmPasswordEditingController = new TextEditingController();
@@ -64,19 +61,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
 
-    //SecondName Field
-    final secondNameField = TextFormField(
+    //lastName Field
+    final lastNameField = TextFormField(
       autofocus: false,
-      controller: secondNameEditingController,
+      controller: lastNameEditingController,
       keyboardType: TextInputType.name,
       validator: (value) {
         if (value!.isEmpty) {
-          return ("Second Name cannot be empty");
+          return ("Last Name cannot be empty");
         }
         return null;
       },
       onSaved: (value) {
-        secondNameEditingController.text = value!;
+        lastNameEditingController.text = value!;
       },
       textInputAction: TextInputAction.next, // goes to next field
       decoration: InputDecoration(
@@ -84,7 +81,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         fillColor: Color(0xFFEBEBEB),
         prefixIcon: Icon(Icons.person),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Enter Second Name",
+        hintText: "Enter Last Name",
         hintStyle: TextStyle(color: Color(0xFF808080)),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -226,7 +223,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     firstNameField,
                     SizedBox(height: 15),
-                    secondNameField,
+                    lastNameField,
                     SizedBox(height: 15),
                     emailField,
                     SizedBox(height: 15), // separating the fields
@@ -299,7 +296,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     userModel.email = user!.email;
     userModel.uid = user.uid;
     userModel.firstName = firstNameEditingController.text;
-    userModel.secondName = secondNameEditingController.text;
+    userModel.lastName = lastNameEditingController.text;
 
     //writing values for user Stats
     stats.uid = user.uid;

@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
 import 'package:STUVI_app/provider/todos.dart';
-import 'package:STUVI_app/utils.dart';
 import 'package:STUVI_app/model/todo.dart';
 import 'package:STUVI_app/page/edit_todo_page.dart';
 
 class TodoWidget extends StatelessWidget {
   final Todo todo;
+  final Function onShowEmojiKeyboard;
 
-  const TodoWidget({
-    required this.todo,
-    Key? key,
-  }) : super(key: key);
+  const TodoWidget(
+      {Key? key, required this.todo, required this.onShowEmojiKeyboard})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(30),
         child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             key: Key(todo.id.toString()),
@@ -47,13 +45,23 @@ class TodoWidget extends StatelessWidget {
       value: todo.isDone,
       onChanged: (_) {
         final provider = Provider.of<TodosProvider>(context, listen: false);
-        final isDone = provider.toggleTodoStatus(todo);
+        provider.toggleTodoStatus(todo);
 
-        Utils.showSnackBar(
-          context,
-          isDone ? 'Task Completed' : 'Task marked Incomplete',
-        );
+        // Utils.showSnackBar(
+        //   context,
+        //   isDone ? 'Task Completed' : 'Task marked Incomplete',
+        // );
       },
+    );
+
+    final emojiText = Padding(
+      padding: EdgeInsets.only(right: 20),
+      child: Text(
+        todo.emoji,
+        style: TextStyle(
+          fontSize: 20,
+        ),
+      ),
     );
 
     final titleText = Text(
@@ -87,23 +95,26 @@ class TodoWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF2A93D5), Color(0XFF37CAEC)],
+            colors: [
+              Color(0xFF2A93D5),
+              Color(0XFF37CAEC),
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.1, 0.9],
           ),
         ),
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(15),
         child: Row(
           children: [
-            SizedBox(width: 50),
+            SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  titleText,
-                  // if (todo.startTime.isNotEmpty)
-                  timeText,
+                  if (todo.emoji.isNotEmpty) emojiText,
+                  if (todo.title.isNotEmpty) titleText,
+                  if (todo.startTime.isNotEmpty) timeText,
                   if (todo.description.isNotEmpty) descriptionText,
                 ],
               ),
@@ -119,12 +130,13 @@ class TodoWidget extends StatelessWidget {
     final provider = Provider.of<TodosProvider>(context, listen: false);
     provider.removeTodo(todo);
 
-    Utils.showSnackBar(context, 'Deleted Task');
+    // Utils.showSnackBar(context, 'Deleted Task');
   }
 
   void editTodo(BuildContext context, Todo todo) => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => EditTodoPage(todo: todo),
+          builder: (context) => EditTodoPage(
+              todo: todo, onShowEmojiKeyboard: this.onShowEmojiKeyboard),
         ),
       );
 }

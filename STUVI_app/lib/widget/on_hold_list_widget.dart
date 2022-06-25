@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
-class OnHoldPage extends StatefulWidget {
-  const OnHoldPage({Key? key}) : super(key: key);
+class OnHoldListWidget extends StatelessWidget {
+  final Function(TextEditingController) onShowEmojiKeyboard;
 
-  @override
-  State<OnHoldPage> createState() => _OnHoldPageState();
-}
+  const OnHoldListWidget({Key? key, required this.onShowEmojiKeyboard})
+      : super(key: key);
 
-class _OnHoldPageState extends State<OnHoldPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(body: Center(child: Text('In Progress 🚧')));
   }
 }

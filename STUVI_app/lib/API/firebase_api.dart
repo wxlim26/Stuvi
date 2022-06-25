@@ -36,4 +36,11 @@ class FirebaseApi {
 
     await docTodo.delete();
   }
+
+  static Future deleteTodoList(List selectedToDoList) async {
+    for (var i = selectedToDoList.length - 1; i >= 0; i--) {
+      Todo selectedTask = selectedToDoList[i];
+      deleteTodo(selectedTask);
+    }
+  }
 }
