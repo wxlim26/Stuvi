@@ -2,35 +2,43 @@ import 'package:STUVI_app/Screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:STUVI_app/Screens/home_screen.dart';
 
+import '../API/firebase_api.dart';
+import '../utils.dart';
+import '../utils/date_time.dart';
+
 class AddTaskPage extends StatefulWidget {
   final String title;
-  final String startTime;
   final String description;
   final int date;
   final String emoji;
+  final int hour;
+  final int minute;
   final ValueChanged<String> onChangedTitle;
-  final ValueChanged<String> onChangedStartTime;
   final ValueChanged<String> onChangedDescription;
   final ValueChanged<int> onChangedDate;
   final VoidCallback onSavedToDo;
   final Function onShowEmojiKeyboard;
   final Function onHideEmojiKeyboard;
+  final ValueChanged<int> onChangedHour;
+  final ValueChanged<int> onChangedMinute;
 
-  const AddTaskPage({
-    Key? key,
-    this.title = '',
-    this.startTime = '',
-    this.description = '',
-    this.date = 0,
-    this.emoji = '',
-    required this.onChangedTitle,
-    required this.onChangedStartTime,
-    required this.onChangedDescription,
-    required this.onChangedDate,
-    required this.onSavedToDo,
-    required this.onShowEmojiKeyboard,
-    required this.onHideEmojiKeyboard,
-  }) : super(key: key);
+  const AddTaskPage(
+      {Key? key,
+      this.title = '',
+      this.description = '',
+      this.date = 0,
+      this.emoji = '',
+      this.hour = 0,
+      this.minute = 0,
+      required this.onChangedTitle,
+      required this.onChangedDescription,
+      required this.onChangedDate,
+      required this.onSavedToDo,
+      required this.onShowEmojiKeyboard,
+      required this.onHideEmojiKeyboard,
+      required this.onChangedHour,
+      required this.onChangedMinute})
+      : super(key: key);
 
   @override
   State<AddTaskPage> createState() => _AddTaskPageState();
@@ -49,7 +57,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
     // TODO: implement initState
     super.initState();
 
-    _controller = TextEditingController(text: widget.startTime);
+    _controller = TextEditingController(
+        text: DateTimeUtil.getFormattedStartTime(widget.hour, widget.minute));
     if (widget.date != 0) {
       DateTime date = DateTime.fromMillisecondsSinceEpoch(widget.date);
       String formattedDate = date.day.toString() +
@@ -57,6 +66,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           date.month.toString() +
           "/" +
           date.year.toString();
+
       _dateController = TextEditingController(text: formattedDate);
     }
 
@@ -86,18 +96,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
       int? minute = value?.minute;
       String? period = value?.period.name;
       if (hour != null && minute != null && period != null) {
-        String strHour = hour.toString();
-        String strMinute = minute.toString();
-        if (hour < 10) {
-          strHour = "0" + strHour;
-        }
-        if (minute < 10) {
-          strMinute = "0" + strMinute;
-        }
-        String formattedTime =
-            strHour + ":" + strMinute + " " + period.toUpperCase();
-        _controller.text = formattedTime;
-        widget.onChangedStartTime(formattedTime);
+        _controller.text = DateTimeUtil.getFormattedStartTime(hour, minute);
+        widget.onChangedHour(hour);
+        widget.onChangedMinute(minute);
       }
     });
   }
@@ -234,7 +235,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
             maxLines: 1,
             controller: _dateController,
             textInputAction: TextInputAction.next,
-            onChanged: widget.onChangedStartTime,
             decoration: InputDecoration(
               filled: true,
               fillColor: Color(0xFFEBEBEB),
@@ -258,7 +258,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
             controller: _emojiController,
             maxLines: 1,
             textInputAction: TextInputAction.next,
-            onChanged: widget.onChangedStartTime,
             decoration: InputDecoration(
               filled: true,
               fillColor: Color(0xFFEBEBEB),

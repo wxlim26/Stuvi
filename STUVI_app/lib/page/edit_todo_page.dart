@@ -19,10 +19,11 @@ class EditTodoPage extends StatefulWidget {
 class _EditTodoPageState extends State<EditTodoPage> {
   final _formKey = GlobalKey<FormState>();
   String title = '';
-  String startTime = '';
   String description = '';
   int date = 0;
   String emoji = '';
+  int hour = 0;
+  int minute = 0;
   bool _showWidgetKeyboard = false;
   List<String> emojis = [];
   TextEditingController _emojiController = TextEditingController();
@@ -67,10 +68,11 @@ class _EditTodoPageState extends State<EditTodoPage> {
     super.initState();
 
     title = widget.todo.title;
-    startTime = widget.todo.startTime;
     description = widget.todo.description;
     date = widget.todo.date;
-    emoji = widget.todo.emoji;
+    hour = widget.todo.hour;
+    minute = widget.todo.minute;
+    emojis = widget.todo.emojis;
   }
 
   @override
@@ -83,7 +85,7 @@ class _EditTodoPageState extends State<EditTodoPage> {
       } else {
         final provider = Provider.of<TodosProvider>(context, listen: false);
         provider.updateTodo(
-            widget.todo, title, description, date, startTime, stringEmoji());
+            widget.todo, title, description, date, hour, minute, emojis);
         Navigator.of(context).pop();
       }
     }
@@ -107,13 +109,14 @@ class _EditTodoPageState extends State<EditTodoPage> {
             child: AddTaskPage(
               title: title,
               date: date,
-              emoji: emoji,
-              startTime: startTime,
+              emoji: stringEmoji(),
               description: description,
+              hour: hour,
+              minute: minute,
               onChangedTitle: (title) => setState(() => this.title = title),
               onChangedDate: (date) => setState(() => this.date = date),
-              onChangedStartTime: (time) =>
-                  setState(() => this.startTime = time),
+              onChangedHour: (hour) => setState(() => this.hour = hour),
+              onChangedMinute: (minute) => setState(() => this.minute = minute),
               onChangedDescription: (description) =>
                   setState(() => this.description = description),
               onShowEmojiKeyboard: (TextEditingController controller) =>

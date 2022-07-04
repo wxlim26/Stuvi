@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:STUVI_app/Screens/view_all_completed_page.dart';
 import 'package:STUVI_app/Screens/view_all_todo_page.dart';
+import 'package:STUVI_app/utils/date_time.dart';
 import 'package:STUVI_app/widget/completed_list_widget.dart';
 import 'package:STUVI_app/widget/daily_streak_widget.dart';
 import 'package:STUVI_app/widget/on_hold_list_widget.dart';
@@ -138,7 +141,10 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         height: MediaQuery.of(context).size.height * 0.30,
         child: StreamBuilder<List<Todo>>(
-          stream: FirebaseApi.readTodos(user!.uid),
+          stream: FirebaseApi.readTodosByDateAndStatus(
+            user!.uid,
+            DateTimeUtil.getTodayDate().toUtc().millisecondsSinceEpoch,
+          ),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:

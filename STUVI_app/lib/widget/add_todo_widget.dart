@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:STUVI_app/Screens/add_task_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +12,7 @@ import 'package:STUVI_app/model/user_model.dart';
 class AddTaskWidget extends StatefulWidget {
   final Function(TextEditingController) onShowEmojiKeyboard;
   final Function() onHideEmojiKeyboard;
-  final String emojis;
+  final List<String> emojis;
 
   const AddTaskWidget({
     Key? key,
@@ -25,12 +27,12 @@ class AddTaskWidget extends StatefulWidget {
 
 class _AddTaskWidgetState extends State<AddTaskWidget> {
   final _formKey = GlobalKey<FormState>();
-  // TimeOfDay timeOfDay = TimeOfDay(hour: 00, minute: 00);
   String title = '';
-  String startTime = '';
   String description = '';
   int date = 0;
   String emoji = '';
+  int hour = 0;
+  int minute = 0;
 
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
@@ -52,7 +54,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
   Widget build(BuildContext context) {
     void addTodo() {
       final isValid = _formKey.currentState!.validate();
-
       if (!isValid) {
         return;
       } else {
@@ -60,11 +61,12 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
             id: DateTime.now().toString(),
             uid: loggedInUser.uid!,
             title: this.title,
-            startTime: this.startTime,
             description: this.description,
             createdTime: DateTime.now(),
-            emoji: widget.emojis,
-            date: this.date);
+            date: this.date,
+            hour: this.hour,
+            minute: this.minute,
+            emojis: widget.emojis);
 
         final provider = Provider.of<TodosProvider>(context, listen: false);
         provider.addTodo(todo, user!.uid);
@@ -80,12 +82,11 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
         children: [
           AddTaskPage(
             onChangedTitle: (title) => setState(() => this.title = title),
-            onChangedStartTime: (time) => setState(() => this.startTime = time),
+            onChangedHour: (hour) => setState(() => this.hour = hour),
+            onChangedMinute: (minute) => setState(() => this.minute = minute),
             onChangedDescription: (description) =>
                 setState(() => this.description = description),
             onChangedDate: (date) => setState(() => this.date = date),
-            // onChangedEmoji: (description) =>
-            //     setState(() => this.emoji = description),
             onShowEmojiKeyboard: (TextEditingController controller) =>
                 {widget.onShowEmojiKeyboard(controller)},
             onHideEmojiKeyboard: () => widget.onHideEmojiKeyboard(),
