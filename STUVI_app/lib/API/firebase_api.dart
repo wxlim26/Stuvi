@@ -25,6 +25,17 @@ class FirebaseApi {
       .snapshots()
       .transform(Utils.transformer(Todo.fromJson));
 
+  static Stream<List<Todo>> readTodosByDateAndStatus(String uid, int date) =>
+      FirebaseFirestore.instance
+          .collection('todo')
+          .where('uid', isEqualTo: uid)
+          .where('date', isEqualTo: date)
+          // TODO: ADD FIRESTORE INDEX FOR THIS 2 TO MAKE IT WORKS
+          // .orderBy('hour')
+          // .orderBy('minute')
+          .snapshots()
+          .transform(Utils.transformer(Todo.fromJson));
+
   static Future updateTodo(Todo todo) async {
     final docTodo = FirebaseFirestore.instance.collection('todo').doc(todo.id);
 

@@ -1,3 +1,4 @@
+import 'package:STUVI_app/utils/date_time.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -57,7 +58,7 @@ class TodoWidget extends StatelessWidget {
     final emojiText = Padding(
       padding: EdgeInsets.only(right: 20),
       child: Text(
-        todo.emoji,
+        todo.emojis.join(""),
         style: TextStyle(
           fontSize: 20,
         ),
@@ -74,7 +75,7 @@ class TodoWidget extends StatelessWidget {
     );
 
     final timeText = Text(
-      '(' + todo.startTime + ')',
+      '(' + DateTimeUtil.getFormattedStartTime(todo.hour, todo.minute) + ')',
       style: TextStyle(
         fontFamily: "OxygenBold",
         color: Colors.white,
@@ -112,9 +113,11 @@ class TodoWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (todo.emoji.isNotEmpty) emojiText,
+                  if (todo.emojis.join("").isNotEmpty) emojiText,
                   if (todo.title.isNotEmpty) titleText,
-                  if (todo.startTime.isNotEmpty) timeText,
+                  if (DateTimeUtil.getFormattedStartTime(todo.hour, todo.minute)
+                      .isNotEmpty)
+                    timeText,
                   if (todo.description.isNotEmpty) descriptionText,
                 ],
               ),

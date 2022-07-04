@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       AddTaskWidget(
           onShowEmojiKeyboard: showEmojiKeyboard,
           onHideEmojiKeyboard: hideEmojiKeyboard,
-          emojis: stringEmoji()),
+          emojis: emojis),
       FriendsPage(),
       ProfilePage()
     ];

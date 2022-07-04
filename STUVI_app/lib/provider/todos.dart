@@ -5,10 +5,18 @@ import '../API/firebase_api.dart';
 class TodosProvider extends ChangeNotifier {
   List<Todo> _todos = [];
 
-  List<Todo> get todos => _todos.where((todo) => todo.isDone == false).toList();
+  List<Todo> get todos {
+    List<Todo> notDoneTodos =
+        _todos.where((todo) => todo.isDone == false).toList();
+    notDoneTodos.sort((a, b) => a.hour.compareTo(b.hour));
+    return notDoneTodos;
+  }
 
-  List<Todo> get todosCompleted =>
-      _todos.where((todo) => todo.isDone == true).toList();
+  List<Todo> get todosCompleted {
+    List<Todo> doneTodos = _todos.where((todo) => todo.isDone == true).toList();
+    doneTodos.sort((a, b) => a.hour.compareTo(b.hour));
+    return doneTodos;
+  }
 
   void setTodos(List<Todo> todos) =>
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -39,12 +47,12 @@ class TodosProvider extends ChangeNotifier {
   }
 
   void updateTodo(Todo todo, String title, String description, int date,
-      String startTime, String emoji) {
+      int hour, int minute, List<String> emojis) {
     todo.title = title;
     todo.description = description;
-    todo.date = date;
-    todo.startTime = startTime;
-    todo.emoji = emoji;
+    todo.hour = hour;
+    todo.minute = minute;
+    todo.emojis = emojis;
 
     FirebaseApi.updateTodo(todo);
   }
