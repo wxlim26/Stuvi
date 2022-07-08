@@ -67,6 +67,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
       //writing values for user Stats
       stats.uid = user.uid;
       stats.exp = 0;
+      stats.totalSessions = 0;
+      stats.secondsSpendToday = 0;
+      stats.secondsSpendLastRecordedDate =
+          DateTime.now().toUtc().millisecondsSinceEpoch;
+      stats.focusModeStreak = 0;
 
       await firebaseFirestore
           .collection("users")
