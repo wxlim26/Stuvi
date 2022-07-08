@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
@@ -22,6 +24,18 @@ class _ProfilePageState extends State<ProfilePage> {
   String? initials;
   num? level;
   num? xp;
+  var image;
+
+  renderImage() {
+    return ClipOval(
+      child: Container(
+        child: SizedBox(
+            width: 120,
+            height: 120,
+            child: Image.memory(image, fit: BoxFit.cover)),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -35,6 +49,9 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         initials = loggedInUser.firstName![0] + loggedInUser.lastName![0];
         initials = initials!.toUpperCase();
+        if (loggedInUser.imageBase64 != null) {
+          image = base64Decode(loggedInUser.imageBase64!);
+        }
       });
     });
 
@@ -94,21 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white70,
-                        minRadius: 50.0,
-                        child: CircleAvatar(
-                          radius: 50.0,
-                          child: Text(
-                            initials!,
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
+                      renderImage(),
                       SizedBox(
                         height: 10,
                       ),
