@@ -1,9 +1,11 @@
+import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:STUVI_app/model/todo.dart';
 import '../API/firebase_api.dart';
 
 class TodosProvider extends ChangeNotifier {
   List<Todo> _todos = [];
+  UserStatsModel stats = UserStatsModel();
 
   List<Todo> get todos {
     List<Todo> notDoneTodos =

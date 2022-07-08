@@ -5,14 +5,14 @@ import 'package:STUVI_app/Screens/registration_page.dart';
 import 'package:STUVI_app/Screens/home_screen.dart';
 import '../page/forgot_password_page.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginPageState extends State<LoginPage> {
   // form key
   final _formKey = GlobalKey<FormState>();
 
@@ -172,8 +172,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: ((context) =>
-                                        RegistrationScreen())));
+                                    builder: ((context) => RegistrationPage(
+                                          onClicked: () => {},
+                                        ))));
                           },
                           child: Text(
                             ' Sign up',

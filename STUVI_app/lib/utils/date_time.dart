@@ -31,4 +31,8 @@ class DateTimeUtil {
     DateTime now = DateTime.now();
     return DateTime(now.year, now.month, now.day);
   }
+
+  static DateTime getDate(date) {
+    return DateTime(date.year, date.month, date.day);
+  }
 }

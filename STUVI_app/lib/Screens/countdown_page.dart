@@ -117,7 +117,7 @@ class _CountdownPageState extends State<CountdownPage> {
                 ),
                 const SizedBox(width: 12),
                 DoneButtonWidget(onClicked: () {
-                  StatsProvider().increaseExp(stats, duration.inSeconds);
+                  StatsProvider().increaseExpTimer(stats, duration.inSeconds);
                   stopTimer();
                 })
               ],

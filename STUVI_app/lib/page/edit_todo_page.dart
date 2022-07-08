@@ -90,17 +90,6 @@ class _EditTodoPageState extends State<EditTodoPage> {
       }
     }
 
-    final appBar = AppBar(
-      elevation: 5,
-      backgroundColor: Colors.white,
-      centerTitle: true,
-      titleTextStyle: TextStyle(
-          fontSize: 20, color: Colors.black, fontFamily: 'OxygenBold'),
-      title: Text(
-        'Edit Task',
-      ),
-    );
-
     return Scaffold(
       body: Column(
         children: [
