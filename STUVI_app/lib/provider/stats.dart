@@ -19,4 +19,32 @@ class StatsProvider extends ChangeNotifier {
   void updateExpTasksList(UserStatsModel stats, int listLength) {
     UserStats.updateExp(stats, listLength);
   }
+
+  void increaseTotalSessions(UserStatsModel stats, DateTime today) {
+    DateTime initialDateTime = DateTime.fromMillisecondsSinceEpoch(
+        stats.secondsSpendLastRecordedDate!.toInt());
+    bool shouldUpdateStreak = today.difference(initialDateTime).inDays == 1;
+    UserStats.updateTotalSessions(stats, shouldUpdateStreak);
+  }
+
+  void increaseSecondsToday(UserStatsModel stats, int seconds) {
+    UserStats.updateSecondsToday(stats, seconds);
+  }
+
+  void shouldResetDay(UserStatsModel stats, DateTime today) {
+    DateTime initialDateTime = DateTime.fromMillisecondsSinceEpoch(
+        stats.secondsSpendLastRecordedDate!.toInt());
+    int initialYear = initialDateTime.year;
+    int initialMonth = initialDateTime.month;
+    int initialDate = initialDateTime.day;
+    int todayYear = today.year;
+    int todayMonth = today.month;
+    int todayDate = today.day;
+    if (initialYear != todayYear ||
+        initialMonth != todayMonth ||
+        initialDate != todayDate) {
+      bool shouldResetStreak = today.difference(initialDateTime).inDays > 1;
+      UserStats.resetDateTime(stats, shouldResetStreak);
+    }
+  }
 }

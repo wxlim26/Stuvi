@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:STUVI_app/widget/done_button_widget.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'dart:async';
 
 import '../widget/play_button_widget.dart';
@@ -42,6 +43,7 @@ class _CountdownPageState extends State<CountdownPage> {
         .get()
         .then((DocumentSnapshot doc) {
       this.stats = UserStatsModel.fromMap(doc.data());
+      StatsProvider().shouldResetDay(this.stats, DateTime.now());
       setState(() {});
     });
   }
@@ -88,6 +90,56 @@ class _CountdownPageState extends State<CountdownPage> {
       centerTitle: true,
     );
 
+    final statisticsText = Text(
+      'My Personal Statistics',
+      style: TextStyle(
+          color: Colors.white, fontFamily: 'OxygenBold', fontSize: 20),
+    );
+
+    final totalSessionText = Text(
+      '${stats.totalSessions}' + '\n' + 'Total' + '\n' + 'Sessions',
+      textAlign: TextAlign.center,
+      style: TextStyle(color: Colors.white, fontFamily: 'Oxygen', fontSize: 20),
+    );
+
+    int minutes = 0;
+    if (stats.secondsSpendToday != null) {
+      minutes = (stats.secondsSpendToday! / 60).floor();
+    }
+    String minutesText = minutes == 1 ? 'Minute' : 'Minutes';
+    final totalMinutesText = Padding(
+      padding: EdgeInsets.only(left: 20),
+      child: Text(
+        '${minutes}' + '\n' + 'Total' + '\n' + minutesText,
+        textAlign: TextAlign.center,
+        style:
+            TextStyle(color: Colors.white, fontFamily: 'Oxygen', fontSize: 20),
+      ),
+    );
+
+    final totalStreakText = Padding(
+      padding: EdgeInsets.only(left: 20),
+      child: Text(
+        '${stats.focusModeStreak}' + '\n' + 'Day' + '\n' + 'Streak',
+        textAlign: TextAlign.center,
+        style:
+            TextStyle(color: Colors.white, fontFamily: 'Oxygen', fontSize: 20),
+      ),
+    );
+
+    final statisticsRow = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[totalSessionText, totalMinutesText, totalStreakText],
+    );
+
+    final line = Padding(
+        padding: EdgeInsets.only(left: 40, right: 40),
+        child: Divider(
+          color: Colors.white,
+          thickness: 1,
+        ));
+
     Widget buildButtons() {
       final isRunning = timer == null ? false : timer!.isActive;
       final isCompleted = duration.inSeconds == 0;
@@ -118,7 +170,12 @@ class _CountdownPageState extends State<CountdownPage> {
                 const SizedBox(width: 12),
                 DoneButtonWidget(onClicked: () {
                   StatsProvider().increaseExpTimer(stats, duration.inSeconds);
+                  StatsProvider().increaseTotalSessions(stats, DateTime.now());
+                  StatsProvider()
+                      .increaseSecondsToday(stats, duration.inSeconds);
                   stopTimer();
+                  showDialog(
+                      context: context, builder: (context) => AlertDialog());
                 })
               ],
             )
@@ -144,8 +201,10 @@ class _CountdownPageState extends State<CountdownPage> {
             style: TextStyle(
                 fontFamily: "OxygenLight", fontSize: 60, color: Colors.white),
           ),
+          SizedBox(height: 20),
           Text(
-            'Time Spent Being Focused',
+            'Time Spent' + '\n' 'Being Focused',
+            textAlign: TextAlign.center,
             style: TextStyle(
                 fontFamily: "OxygenLight", fontSize: 20, color: Colors.white),
           ),
@@ -191,7 +250,18 @@ class _CountdownPageState extends State<CountdownPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [buildTimer(), SizedBox(height: 40), buildButtons()],
+            children: [
+              statisticsText,
+              SizedBox(height: 20),
+              statisticsRow,
+              SizedBox(height: 20),
+              line,
+              SizedBox(height: 30),
+              buildTimer(),
+              SizedBox(height: 30),
+              buildButtons(),
+              SizedBox(height: 75)
+            ],
           ),
         ),
       ),

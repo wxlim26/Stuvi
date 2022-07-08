@@ -1,5 +1,7 @@
 import 'package:STUVI_app/Screens/countdown_page.dart';
 import 'package:STUVI_app/Screens/home_page.dart';
+import 'package:STUVI_app/model/user_stats_model.dart';
+import 'package:STUVI_app/provider/stats.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -20,10 +22,17 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
+  UserStatsModel stats = UserStatsModel();
 
   bool _showWidgetKeyboard = false;
   List<String> emojis = [];
   TextEditingController _emojiController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   void showEmojiKeyboard(TextEditingController contoller) {
     setState(() {
