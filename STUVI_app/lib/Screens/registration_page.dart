@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:STUVI_app/Screens/home_screen.dart';
 import 'package:STUVI_app/Screens/login_page.dart';
@@ -31,6 +33,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _auth = FirebaseAuth.instance;
   File? image;
   String? errorMessage;
+  String imageBase64String = "";
 
   //editing controllers
   final firstNameEditingController = new TextEditingController();
@@ -59,6 +62,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       userModel.lastName = lastNameEditingController.text;
       userModel.registrationDate =
           DateTime.now().toUtc().millisecondsSinceEpoch;
+      userModel.imageBase64 = imageBase64String;
 
       //writing values for user Stats
       stats.uid = user.uid;
@@ -120,33 +124,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
       }
     }
 
-    Future<File> saveImagePermanenetly(String imagePath) async {
-      final directory = await getApplicationDocumentsDirectory();
-      final name = basename(imagePath);
-      final image = File('${directory.path}/$name');
-      return File(imagePath).copy(imagePath);
-    }
-
     Future pickImage(ImageSource source) async {
       try {
         final image = await ImagePicker().pickImage(source: source);
         if (image == null) return;
 
-        // final imageTemporary = File(image.path);
-        final imagePermanent = await saveImagePermanenetly(image.path);
-        setState(() => this.image = imagePermanent);
+        final bytes = File(image.path).readAsBytesSync();
+        String img64 = base64Encode(bytes);
+        setState(() => this.imageBase64String = img64);
       } on PlatformException catch (e) {
         print('Failed to pick image $e');
       }
     }
 
-    final defaultProfilePicture = ClipOval(
-      child: Image.file(
-        File('assets/default.jpg'),
+    renderImage() {
+      return SizedBox(
         width: 160,
         height: 160,
-        fit: BoxFit.cover,
-      ),
+        child: imageBase64String.isEmpty
+            ? Image.asset("assets/default.jpg", fit: BoxFit.contain)
+            : Image.memory(base64Decode(this.imageBase64String),
+                fit: BoxFit.cover),
+      );
+    }
+
+    final defaultProfilePicture = ClipOval(
+      child: renderImage(),
     );
 
     final cameraButton = IconButton(

@@ -19,12 +19,8 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 
 class DailyPlannerPage extends StatefulWidget {
   final Function(TextEditingController) onShowEmojiKeyboard;
-  DateTime? selectedDateTableCalendar;
 
-  DailyPlannerPage(
-      {Key? key,
-      required this.onShowEmojiKeyboard,
-      required this.selectedDateTableCalendar})
+  DailyPlannerPage({Key? key, required this.onShowEmojiKeyboard})
       : super(key: key);
 
   @override
@@ -34,8 +30,7 @@ class DailyPlannerPage extends StatefulWidget {
 class _DailyPlannerPageState extends State<DailyPlannerPage> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
-  DateTime? selectedDateHorizontalCalendar = DateTime.now();
-  DateTime? finalDate = DateTime.now();
+  DateTime finalDate = DateTime.now();
 
   void initState() {
     super.initState();
@@ -63,6 +58,12 @@ class _DailyPlannerPageState extends State<DailyPlannerPage> {
     } else {
       return "Member for ${calculateDays()} days 🙋";
     }
+  }
+
+  void setFinalDate(DateTime dateTime) {
+    setState(() {
+      this.finalDate = dateTime;
+    });
   }
 
   @override
@@ -94,30 +95,36 @@ class _DailyPlannerPageState extends State<DailyPlannerPage> {
           color: Colors.black,
           onPressed: () {
             showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                insetPadding:
-                    EdgeInsets.only(left: 15, right: 15, bottom: 145, top: 100),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                title: Text(
-                  'Choose Date',
-                  textAlign: TextAlign.center,
-                  style:
-                      TextStyle(fontFamily: 'OxygenBold', color: Colors.black),
-                ),
-                content: Stack(
-                  children: <Widget>[
-                    CalendarWidget(
-                      onShowEmojiKeyboard: widget.onShowEmojiKeyboard,
-                    ),
-                  ],
-                ),
-              ),
-            );
+                context: context,
+                builder: (context) => AlertDialog(
+                      insetPadding: EdgeInsets.only(
+                          left: 15, right: 15, bottom: 145, top: 100),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
+                      title: Text(
+                        'Choose Date',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'OxygenBold', color: Colors.black),
+                      ),
+                      content: Stack(
+                        children: <Widget>[
+                          CalendarWidget(
+                            dateTime: this.finalDate,
+                            onDateChange: (DateTime dateTime) {
+                              if (dateTime != null) {
+                                setFinalDate(dateTime);
+                              }
+                              Navigator.pop(context);
+                            },
+                            onShowEmojiKeyboard: widget.onShowEmojiKeyboard,
+                          ),
+                        ],
+                      ),
+                    ));
           },
           icon: Icon(
             Icons.edit_calendar_rounded,
@@ -140,7 +147,7 @@ class _DailyPlannerPageState extends State<DailyPlannerPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            DateFormat("EEEE, d MMMM y").format(DateTime.now()),
+            DateFormat("EEEE, d MMMM y").format(this.finalDate),
             style: TextStyle(
                 fontSize: 20, color: Colors.white, fontFamily: 'OxygenBold'),
           ),
@@ -163,40 +170,39 @@ class _DailyPlannerPageState extends State<DailyPlannerPage> {
       ),
     );
 
-    final horizontalDatePicker = Padding(
-      padding: EdgeInsets.only(left: 15, right: 15),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          DatePicker(
-            DateTime.now(),
-            initialSelectedDate: DateTime.now(),
-            dayTextStyle: TextStyle(
-                fontSize: 10, color: Colors.white, fontFamily: 'Oxygen'),
-            monthTextStyle: TextStyle(
-                fontSize: 10, color: Colors.white, fontFamily: 'Oxygen'),
-            dateTextStyle: TextStyle(
-                fontSize: 20, color: Colors.white, fontFamily: 'OxygenBold'),
-            selectionColor: Colors.white,
-            selectedTextColor: Color(0xFF31AFE1),
-            onDateChange: (date) {
-              setState(
-                () {
-                  selectedDateHorizontalCalendar = date;
-                  widget.selectedDateTableCalendar = date;
-                  finalDate = date;
-                },
-              );
-            },
-          ),
-        ],
-      ),
-    );
+    // final horizontalDatePicker = Padding(
+    //   padding: EdgeInsets.only(left: 15, right: 15),
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     children: <Widget>[
+    //       DatePicker(
+    //         DateTime.now(),
+    //         initialSelectedDate: this.finalDate,
+    //         dayTextStyle: TextStyle(
+    //             fontSize: 10, color: Colors.white, fontFamily: 'Oxygen'),
+    //         monthTextStyle: TextStyle(
+    //             fontSize: 10, color: Colors.white, fontFamily: 'Oxygen'),
+    //         dateTextStyle: TextStyle(
+    //             fontSize: 20, color: Colors.white, fontFamily: 'OxygenBold'),
+    //         selectionColor: Colors.white,
+    //         selectedTextColor: Color(0xFF31AFE1),
+    //         onDateChange: (date) {
+    //           setState(
+    //             () {
+    //               // widget.selectedDateTableCalendar = date;
+    //               finalDate = date;
+    //             },
+    //           );
+    //         },
+    //       ),
+    //     ],
+    //   ),
+    // );
 
     final waveBox = ClipPath(
       clipper: WaveClipperTwo(),
       child: Container(
-        height: 228,
+        height: 135,
         width: 500,
         color: Color(0xFF31AFE1),
         child: Column(children: [
@@ -205,7 +211,6 @@ class _DailyPlannerPageState extends State<DailyPlannerPage> {
           SizedBox(height: 15),
           userText,
           SizedBox(height: 15),
-          horizontalDatePicker
         ]),
       ),
     );
@@ -268,16 +273,6 @@ class _DailyPlannerPageState extends State<DailyPlannerPage> {
       children: <Widget>[toDoText, viewAllOne],
     );
 
-    // setState(
-    //   () {
-    //     if (widget.selectedDateTableCalendar !=
-    //         selectedDateHorizontalCalendar) {
-    //       selectedDateHorizontalCalendar = widget.selectedDateTableCalendar;
-    //       finalDate = widget.selectedDateTableCalendar;
-    //     }
-    //   },
-    // );
-
     final todoList = Padding(
       padding: const EdgeInsets.only(left: 5, right: 5),
       child: Container(
@@ -285,9 +280,7 @@ class _DailyPlannerPageState extends State<DailyPlannerPage> {
         child: StreamBuilder<List<Todo>>(
           stream: FirebaseApi.readTodosByDateAndStatus(
             user!.uid,
-            DateTimeUtil.getDate(selectedDateHorizontalCalendar)
-                .toUtc()
-                .millisecondsSinceEpoch,
+            DateTimeUtil.getDate(finalDate).toUtc().millisecondsSinceEpoch,
           ),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {

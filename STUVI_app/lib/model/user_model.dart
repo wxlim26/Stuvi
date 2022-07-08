@@ -1,5 +1,5 @@
 class UserModel {
-  String? imagePath;
+  String? imageBase64;
   String? uid;
   String? email;
   String? firstName;
@@ -7,7 +7,7 @@ class UserModel {
   int registrationDate;
 
   UserModel(
-      {this.imagePath,
+      {this.imageBase64,
       this.uid,
       this.email,
       this.firstName,
@@ -22,7 +22,7 @@ class UserModel {
         firstName: map['firstName'],
         lastName: map['lastName'],
         registrationDate: map['registrationDate'],
-        imagePath: map['imagePath']);
+        imageBase64: map['imagePath']);
   }
 
   // sending data to server
@@ -33,7 +33,7 @@ class UserModel {
       'firstName': firstName,
       'lastName': lastName,
       'registrationDate': registrationDate,
-      'imagePath': imagePath
+      'imagePath': imageBase64
     };
   }
 }

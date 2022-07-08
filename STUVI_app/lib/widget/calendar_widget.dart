@@ -1,11 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:STUVI_app/Screens/daily_planner_page.dart';
 
 class CalendarWidget extends StatefulWidget {
   final Function(TextEditingController) onShowEmojiKeyboard;
+  final Function onDateChange;
+  final DateTime dateTime;
 
-  CalendarWidget({Key? key, required this.onShowEmojiKeyboard})
+  CalendarWidget(
+      {Key? key,
+      required this.onShowEmojiKeyboard,
+      required this.onDateChange,
+      required this.dateTime})
       : super(key: key);
 
   @override
@@ -14,8 +22,13 @@ class CalendarWidget extends StatefulWidget {
 
 class _CalendarWidgetState extends State<CalendarWidget> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +45,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             BoxDecoration(color: Color(0xFF89CFF0), shape: BoxShape.circle),
       ),
       headerStyle: HeaderStyle(formatButtonShowsNext: false),
-      focusedDay: _focusedDay,
+      currentDay: widget.dateTime,
+      focusedDay: widget.dateTime,
       calendarFormat: _calendarFormat,
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);
@@ -40,8 +54,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       onDaySelected: (selectedDay, focusedDay) {
         setState(() {
           _selectedDay = selectedDay;
-          _focusedDay = focusedDay;
-          // readTodosByDateAndStatus(String uid, int date)
         });
       },
       onFormatChanged: (format) {
@@ -51,23 +63,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           });
         }
       },
-      onPageChanged: (focusedDay) {
-        _focusedDay = focusedDay;
-      },
     );
 
     final selectButton = Padding(
       padding: EdgeInsets.all(15),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: ((context) => DailyPlannerPage(
-                    onShowEmojiKeyboard: (TextEditingController) {},
-                    selectedDateTableCalendar: _selectedDay,
-                  )),
-            ),
-          );
+          widget.onDateChange(_selectedDay);
         },
         child: Text(
           'SELECT',
