@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:STUVI_app/Screens/add_task_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -1,4 +1,8 @@
+import 'package:STUVI_app/model/user_stats_model.dart';
+import 'package:STUVI_app/provider/stats.dart';
 import 'package:STUVI_app/utils/date_time.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -46,12 +50,28 @@ class TodoWidget extends StatelessWidget {
       value: todo.isDone,
       onChanged: (_) {
         final provider = Provider.of<TodosProvider>(context, listen: false);
-        provider.toggleTodoStatus(todo);
+        bool isDone = provider.toggleTodoStatus(todo);
+        User? user = FirebaseAuth.instance.currentUser;
 
-        // Utils.showSnackBar(
-        //   context,
-        //   isDone ? 'Task Completed' : 'Task marked Incomplete',
-        // );
+        FirebaseFirestore.instance
+            .collection("UserStats")
+            .doc(user!.uid)
+            .get()
+            .then(
+          (DocumentSnapshot doc) {
+            UserStatsModel stats = UserStatsModel.fromMap(doc.data());
+            if (isDone) {
+              StatsProvider().increaseExpTasks(stats);
+            } else {
+              StatsProvider().decreaseExpTasks(stats);
+            }
+
+            // Utils.showSnackBar(
+            //   context,
+            //   isDone ? 'Task Completed' : 'Task marked Incomplete',
+            // );
+          },
+        );
       },
     );
 

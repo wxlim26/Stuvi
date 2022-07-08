@@ -1,4 +1,8 @@
+import 'package:STUVI_app/model/user_stats_model.dart';
+import 'package:STUVI_app/provider/stats.dart';
 import 'package:STUVI_app/provider/todos.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -81,6 +85,19 @@ class _SelectTasksToDoWidgetState extends State<SelectTasksToDoWidget> {
       child: GestureDetector(
         onTap: () {
           provider.toggleTodoStatusList(selectedToDoList);
+          User? user = FirebaseAuth.instance.currentUser;
+
+          FirebaseFirestore.instance
+              .collection("UserStats")
+              .doc(user!.uid)
+              .get()
+              .then(
+            (DocumentSnapshot doc) {
+              UserStatsModel stats = UserStatsModel.fromMap(doc.data());
+              StatsProvider()
+                  .updateExpTasksList(stats, 50 * selectedToDoList.length);
+            },
+          );
         },
         child: Text(
           'MARK COMPLETED',

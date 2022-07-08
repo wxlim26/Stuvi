@@ -52,7 +52,7 @@ class _ViewAllCompletedPageState extends State<ViewAllCompletedPage> {
                   style:
                       TextStyle(fontFamily: 'OxygenBold', color: Colors.black),
                 ),
-                content: DeleteTasksCompletedWidget(),
+                content: SelectTasksCompletedWidget(),
               ),
             );
           },
