@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:STUVI_app/Screens/home_screen.dart';
 import 'package:STUVI_app/Screens/login_page.dart';
+import 'package:STUVI_app/model/user_friends.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:STUVI_app/widget/image_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -54,6 +55,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
       UserModel userModel = UserModel();
       UserStatsModel stats = UserStatsModel();
+      UserFriends userFriends = UserFriends();
 
       // writing all the values
       userModel.email = user!.email;
@@ -73,6 +75,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
           DateTime.now().toUtc().millisecondsSinceEpoch;
       stats.focusModeStreak = 0;
 
+      //writing values for userFriends collection
+      userFriends.uid = user.uid;
+      userFriends.privacyMode = false;
+      userFriends.friendList = [];
+
       await firebaseFirestore
           .collection("users")
           .doc(user.uid)
@@ -83,6 +90,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
           .collection("UserStats")
           .doc(user.uid)
           .set(stats.toMap());
+
+      await firebaseFirestore
+          .collection("userFriends")
+          .doc(user.uid)
+          .set(userFriends.toMap());
 
       Navigator.pushAndRemoveUntil(
           (context),
