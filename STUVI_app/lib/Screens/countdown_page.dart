@@ -1,14 +1,14 @@
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:STUVI_app/provider/stats.dart';
+import 'package:STUVI_app/widget/restart_button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:STUVI_app/widget/done_button_widget.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'dart:async';
-
 import '../widget/play_button_widget.dart';
+import 'package:intl/intl.dart';
 
 class CountdownPage extends StatefulWidget {
   const CountdownPage({Key? key}) : super(key: key);
@@ -20,6 +20,7 @@ class _CountdownPageState extends State<CountdownPage> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
   UserStatsModel stats = UserStatsModel();
+  String initialTime = DateTime.now().toString();
 
   Duration duration = Duration();
   Timer? timer;
@@ -63,6 +64,9 @@ class _CountdownPageState extends State<CountdownPage> {
   }
 
   void startTimer({bool resets = true}) {
+    DateTime currentTime = DateTime.now();
+    String formattedTime = DateFormat.Hms().format(currentTime);
+    initialTime = formattedTime;
     if (resets) {
       resetTimer();
     }
@@ -140,6 +144,18 @@ class _CountdownPageState extends State<CountdownPage> {
           thickness: 1,
         ));
 
+    int expEarned = (duration.inSeconds / 3600).floor() * 100 +
+        (duration.inSeconds / 60).floor() * 10;
+
+    final expEarnedText = Text(
+      'Total EXP Earned: ${expEarned.toString()}',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: 'Oxygen',
+        color: Colors.black,
+      ),
+    );
+
     Widget buildButtons() {
       final isRunning = timer == null ? false : timer!.isActive;
       final isCompleted = duration.inSeconds == 0;
@@ -147,6 +163,12 @@ class _CountdownPageState extends State<CountdownPage> {
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                RestartButtonWidget(
+                  onClicked: () {
+                    stopTimer();
+                  },
+                ),
+                const SizedBox(width: 12),
                 FloatingActionButton(
                   onPressed: () {
                     setState(() {
@@ -160,7 +182,7 @@ class _CountdownPageState extends State<CountdownPage> {
                   },
                   backgroundColor: Colors.white,
                   child:
-                      //paused ? Icon(Icons.pause) : Icon(Icons.play_arrow_rounded),
+                      // paused ? Icon(Icons.pause) : Icon(Icons.play_arrow_rounded),
                       Icon(
                           (paused == true)
                               ? Icons.pause
@@ -168,15 +190,70 @@ class _CountdownPageState extends State<CountdownPage> {
                           color: Color(0xFF31AFE1)),
                 ),
                 const SizedBox(width: 12),
-                DoneButtonWidget(onClicked: () {
-                  StatsProvider().increaseExpTimer(stats, duration.inSeconds);
-                  StatsProvider().increaseTotalSessions(stats, DateTime.now());
-                  StatsProvider()
-                      .increaseSecondsToday(stats, duration.inSeconds);
-                  stopTimer();
-                  showDialog(
-                      context: context, builder: (context) => AlertDialog());
-                })
+                DoneButtonWidget(
+                  onClicked: () {
+                    StatsProvider().increaseExpTimer(stats, duration.inSeconds);
+                    StatsProvider()
+                        .increaseTotalSessions(stats, DateTime.now());
+                    StatsProvider()
+                        .increaseSecondsToday(stats, duration.inSeconds);
+
+                    stopTimer();
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        insetPadding: EdgeInsets.only(top: 280, bottom: 300),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        title: Text(
+                          'Congratulations! 🏆',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: 'OxygenBold', color: Colors.black),
+                        ),
+                        content: Padding(
+                            padding: EdgeInsets.only(left: 15, right: 15),
+                            child: Column(
+                              children: [
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Start Time',
+                                        style:
+                                            TextStyle(fontFamily: 'OxygenBold'),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        'End Time',
+                                        style:
+                                            TextStyle(fontFamily: 'OxygenBold'),
+                                      )
+                                    ]),
+                                SizedBox(width: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(initialTime),
+                                    SizedBox(width: 23),
+                                    Text(DateFormat.Hms()
+                                        .format(DateTime.now())),
+                                  ],
+                                ),
+                                SizedBox(height: 15),
+                                expEarnedText,
+                              ],
+                            )),
+                      ),
+                    );
+                  },
+                ),
               ],
             )
           : PlayButtonWidget(
