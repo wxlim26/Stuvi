@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:STUVI_app/widget/add_todo_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:STUVI_app/Screens/profile_page.dart';
-import 'package:STUVI_app/Screens/friends_page.dart';
+import 'package:STUVI_app/Screens/socials_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onShowEmojiKeyboard: showEmojiKeyboard,
           onHideEmojiKeyboard: hideEmojiKeyboard,
           emojis: emojis),
-      FriendsPage(),
+      SocialsPage(),
       ProfilePage()
     ];
     final items = <Widget>[

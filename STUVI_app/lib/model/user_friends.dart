@@ -1,16 +1,21 @@
+import 'package:STUVI_app/model/user_friend.dart';
+
 class UserFriends {
   String? uid;
   bool privacyMode;
-  List friendList;
+  List<UserFriend> friendList;
 
   UserFriends({this.uid, this.privacyMode = false, this.friendList = const []});
 
   // receiving data from server
   factory UserFriends.fromMap(map) {
+    print(map);
     return UserFriends(
       uid: map['uid'],
       privacyMode: map['privacyMode'],
-      friendList: map['friendList'],
+      friendList: ((map['friendList'] as List)
+          .map((v) => UserFriend.fromMap(v))
+          .toList()),
     );
   }
 
@@ -19,7 +24,7 @@ class UserFriends {
     return {
       'uid': uid,
       'privacyMode': privacyMode,
-      'friendList': friendList,
+      'friendList': friendList.map((e) => e.toMap()).toList(),
     };
   }
 }

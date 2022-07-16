@@ -1,3 +1,4 @@
+import 'package:STUVI_app/model/user_friend.dart';
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +7,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Search extends StatefulWidget {
+  final VoidCallback onSuccessfullyRequest;
+
+  const Search(this.onSuccessfullyRequest);
+
   @override
   _SearchState createState() => _SearchState();
 }
@@ -63,15 +68,29 @@ class _SearchState extends State<Search> {
       existingList = value["friendList"];
     }));
 
-    if (existingList.contains(friend.uid) != true &&
-        friend.uid != loggedInUser.uid) {
+    if (friend.uid != loggedInUser.uid) {
       await _firestore.collection("userFriends").doc(loggedInUser.uid).update({
         "friendList": FieldValue.arrayUnion([
-          friend.uid,
+          UserFriend(
+                  uid: friend.uid,
+                  status: 'PENDING',
+                  requestedAt: DateTime.now().toUtc().millisecondsSinceEpoch,
+                  requestedID: loggedInUser.uid!)
+              .toMap()
         ]),
       });
-      setState(() {});
+      await _firestore.collection("userFriends").doc(frienduid).update({
+        "friendList": FieldValue.arrayUnion([
+          UserFriend(
+                  uid: loggedInUser.uid,
+                  status: 'PENDING',
+                  requestedAt: DateTime.now().toUtc().millisecondsSinceEpoch,
+                  requestedID: loggedInUser.uid!)
+              .toMap()
+        ]),
+      });
       Fluttertoast.showToast(msg: 'Friend Successfully added');
+      widget.onSuccessfullyRequest();
     } else if (friend.uid == loggedInUser.uid) {
       Fluttertoast.showToast(msg: 'Cannot add yourself');
     } else {
@@ -147,7 +166,10 @@ class _SearchState extends State<Search> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Align(alignment: Alignment.topLeft, child: Text('Enter UserID')),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Text('Enter UserID'),
+          ),
           SizedBox(height: 8),
           buildSearchField(),
           SizedBox(height: 10),
