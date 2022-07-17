@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:STUVI_app/Screens/achievement_selector_page.dart';
 import 'package:STUVI_app/Screens/home_screen.dart';
 import 'package:STUVI_app/Screens/login_page.dart';
 import 'package:STUVI_app/model/user_friends.dart';
@@ -16,25 +17,25 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
-class RegistrationPage extends StatefulWidget {
-  final VoidCallback onClicked;
-
-  RegistrationPage({
+class EditProfilePage extends StatefulWidget {
+  UserModel user;
+  EditProfilePage({
     Key? key,
-    required this.onClicked,
+    required this.user,
   }) : super(key: key);
 
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class _EditProfilePageState extends State<EditProfilePage> {
   // formkey
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   File? image;
   String? errorMessage;
   String imageBase64String = "";
+  String title = "";
 
   //editing controllers
   final firstNameEditingController = new TextEditingController();
@@ -42,106 +43,55 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final emailEditingController = new TextEditingController();
   final passwordEditingController = new TextEditingController();
   final confirmPasswordEditingController = new TextEditingController();
+  final titleController = new TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    firstNameEditingController.text = widget.user.firstName!;
+    lastNameEditingController.text = widget.user.lastName!;
+    emailEditingController.text = widget.user.email!;
+    titleController.text = widget.user.title;
+    imageBase64String =
+        widget.user.imageBase64 != null ? widget.user.imageBase64! : "";
+  }
 
   @override
   Widget build(BuildContext context) {
-    postDetailsToFirestore() async {
-      // calling our firestore
-      // calling our user model
-      // sedning these values
-
+    void signUp(String email, String password) async {
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       User? user = _auth.currentUser;
-
       UserModel userModel = UserModel();
-      UserStatsModel stats = UserStatsModel();
-      UserFriends userFriends = UserFriends();
-
-      // writing all the values
       userModel.email = user!.email;
+
+      if (user.email != emailEditingController.text) {
+        await user.updateEmail(emailEditingController.text);
+        userModel.email = emailEditingController.text;
+      }
+
+      if (passwordEditingController.text != null &&
+          passwordEditingController.text.isNotEmpty) {
+        await user.updatePassword(passwordEditingController.text);
+      }
+
       userModel.uid = user.uid;
       userModel.firstName = firstNameEditingController.text;
       userModel.lastName = lastNameEditingController.text;
-      userModel.registrationDate =
-          DateTime.now().toUtc().millisecondsSinceEpoch;
+      userModel.registrationDate = widget.user.registrationDate;
       userModel.imageBase64 = imageBase64String;
-
-      //writing values for user Stats
-      stats.uid = user.uid;
-      stats.exp = 0;
-      stats.totalSessions = 0;
-      stats.secondsSpendToday = 0;
-      stats.secondsSpendLastRecordedDate =
-          DateTime.now().toUtc().millisecondsSinceEpoch;
-      stats.focusModeStreak = 0;
-      stats.currentStreakTask = 0;
-      stats.longestStreakTask = 0;
-      stats.lastDateStreak = stats.secondsSpendLastRecordedDate;
-
-      //writing values for userFriends collection
-      userFriends.uid = user.uid;
-      userFriends.privacyMode = false;
-      userFriends.friendList = [];
+      userModel.title = titleController.text;
 
       await firebaseFirestore
           .collection("users")
           .doc(user.uid)
           .set(userModel.toMap());
-      Fluttertoast.showToast(msg: "Account created successfully :) ");
-
-      await firebaseFirestore
-          .collection("UserStats")
-          .doc(user.uid)
-          .set(stats.toMap());
-
-      await firebaseFirestore
-          .collection("userFriends")
-          .doc(user.uid)
-          .set(userFriends.toMap());
+      Fluttertoast.showToast(msg: "Profile Updated");
 
       Navigator.pushAndRemoveUntil(
           (context),
           MaterialPageRoute(builder: (context) => HomeScreen()),
           (route) => false);
-    }
-
-    void signUp(String email, String password) async {
-      if (_formKey.currentState!.validate()) {
-        try {
-          await _auth
-              .createUserWithEmailAndPassword(email: email, password: password)
-              .then((value) => {postDetailsToFirestore()})
-              .catchError((e) {
-            Fluttertoast.showToast(msg: e!.message);
-          });
-        } on FirebaseAuthException catch (error) {
-          switch (error.code) {
-            case "invalid-email":
-              errorMessage = "Your email address appears to be malformed.";
-              break;
-            case "wrong-password":
-              errorMessage = "Your password is wrong.";
-              break;
-            case "user-not-found":
-              errorMessage = "User with this email doesn't exist.";
-              break;
-            case "user-disabled":
-              errorMessage = "User with this email has been disabled.";
-              break;
-            case "too-many-requests":
-              errorMessage = "Too many requests";
-              break;
-            case "operation-not-allowed":
-              errorMessage =
-                  "Signing in with Email and Password is not enabled.";
-              break;
-            default:
-              errorMessage = "An undefined Error happened.";
-          }
-          Fluttertoast.showToast(msg: errorMessage!);
-          print(error.code);
-        }
-      }
     }
 
     Future pickImage(ImageSource source) async {
@@ -214,6 +164,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       onSaved: (value) {
         firstNameEditingController.text = value!;
       },
+
       textInputAction: TextInputAction.next, // goes to next field
       decoration: InputDecoration(
         filled: true,
@@ -349,6 +300,38 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ),
     );
 
+    final achievementSelector = TextFormField(
+      autofocus: false,
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AchievementSelectorPage(
+                      onChangeTitle: (String title) {
+                        setState(() {
+                          this.title = title;
+                          titleController.text = title;
+                        });
+                      },
+                      uid: widget.user.uid!,
+                    )));
+      },
+      readOnly: true,
+      controller: titleController,
+      textInputAction: TextInputAction.next, // goes to next field
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Color(0xFFEBEBEB),
+        prefixIcon: Icon(Icons.emoji_events),
+        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Select Title",
+        hintStyle: TextStyle(color: Color(0xFF808080)),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 0, style: BorderStyle.none)),
+      ),
+    );
+
     //Sign up button
     final signUpButton = Material(
       elevation: 5,
@@ -361,7 +344,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           signUp(emailEditingController.text, passwordEditingController.text);
         }, // Replace with the save to database
         child: Text(
-          "Sign Up",
+          "Update Profile",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 15, color: Colors.white, fontFamily: 'OxygenBold'),
@@ -369,30 +352,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ),
     );
 
-    final bottomText = Material(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text("Back To"),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: ((context) => LoginPage())));
-            },
-            child: Text(
-              ' Login Page',
-              style: TextStyle(
-                  color: Color(0xFF31AFE1),
-                  fontFamily: 'OxygenBold',
-                  fontSize: 15),
-            ),
-          )
-        ],
-      ),
-    );
-
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          "Your Profile",
+          style: TextStyle(
+            fontSize: 20,
+            fontFamily: 'OxygenBold',
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 25,
+          ),
+        ),
+        actions: [],
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -424,9 +408,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     SizedBox(height: 15),
                     confirmPasswordField,
                     SizedBox(height: 15),
-                    signUpButton,
+                    achievementSelector,
                     SizedBox(height: 15),
-                    bottomText
+                    signUpButton,
                   ],
                 ),
               ),

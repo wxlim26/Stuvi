@@ -9,7 +9,6 @@ class UserFriends {
 
   // receiving data from server
   factory UserFriends.fromMap(map) {
-    print(map);
     return UserFriends(
       uid: map['uid'],
       privacyMode: map['privacyMode'],

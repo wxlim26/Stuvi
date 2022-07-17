@@ -91,126 +91,208 @@ class Achievement {
     ];
   }
 
+  static List<Achievement> getTaskLevel() {
+    return [
+      // NOVICE
+      Achievement(
+          name: 'Your First',
+          iconPath: 'assets/achievements_icon/13.png',
+          condition: 'A great start to be the very best!',
+          achieved: false),
+      Achievement(
+          name: 'Decennium',
+          iconPath: 'assets/achievements_icon/14.png',
+          condition:
+              "A day's worth of tasks, but the title says otherwise...keep up the momentum!",
+          achieved: false),
+      Achievement(
+          name: 'Centenniel',
+          iconPath: 'assets/achievements_icon/15.png',
+          condition:
+              'You are on your way to beating the age of the oldest person living on earth!',
+          achieved: false),
+      Achievement(
+          name: 'Quincentenary',
+          iconPath: 'assets/achievements_icon/16.png',
+          condition: 'Hmmmm... who knew this word evver existed anyways?',
+          achieved: false),
+      Achievement(
+          name: 'Millenium',
+          iconPath: 'assets/achievements_icon/17.png',
+          condition:
+              "Having come so far you now officially hold the title of STUVI's task-maniac",
+          achieved: false),
+    ];
+  }
+
+  static List<Achievement> getFocusModeAchievements() {
+    return [
+      // NOVICE
+      Achievement(
+          name: 'Golden Hour',
+          iconPath: 'assets/achievements_icon/18.png',
+          condition: 'The start of a magical journey!',
+          achieved: false),
+      Achievement(
+          name: 'Portal',
+          iconPath: 'assets/achievements_icon/19.png',
+          condition: "Into the abyss!",
+          achieved: false),
+      Achievement(
+          name: 'Hyperbolic Time Chamber',
+          iconPath: 'assets/achievements_icon/20.png',
+          condition: 'Are you secretly a time traveler?',
+          achieved: false),
+      Achievement(
+          name: 'Timeless',
+          iconPath: 'assets/achievements_icon/21.png',
+          condition: 'A tale as old as time',
+          achieved: false),
+      Achievement(
+          name: 'BlackHole',
+          iconPath: 'assets/achievements_icon/22.png',
+          condition: "What is time anymore?",
+          achieved: false),
+    ];
+  }
+
+  static List<Achievement> getLoginStreakAchievements() {
+    return [
+      // NOVICE
+      Achievement(
+          name: 'Epic',
+          iconPath: 'assets/achievements_icon/23.png',
+          condition: 'Logged in for 100 days',
+          achieved: false),
+      Achievement(
+          name: 'Legendary',
+          iconPath: 'assets/achievements_icon/24.png',
+          condition: "Logged in for 500 days",
+          achieved: false),
+      Achievement(
+          name: 'Mythical',
+          iconPath: 'assets/achievements_icon/25.png',
+          condition: 'Logged in for 1000 days',
+          achieved: false),
+    ];
+  }
+
+  static List<Achievement> getHiddenAchievements() {
+    return [
+      // NOVICE
+      Achievement(
+          name: 'Socialite',
+          iconPath: 'assets/achievements_icon/26.png',
+          condition: 'Hello Popular Person',
+          achieved: false),
+    ];
+  }
+
+  static List<Achievement> getListTask(
+      num totalTask, List<Achievement> taskList) {
+    List<Achievement> newList = [];
+    if (totalTask > 0) {
+      newList.add(taskList[0].setAchieved());
+    }
+    if (totalTask >= 10) {
+      newList.add(taskList[1].setAchieved());
+    }
+    if (totalTask >= 100) {
+      newList.add(taskList[2].setAchieved());
+    }
+    if (totalTask >= 500) {
+      newList.add(taskList[3].setAchieved());
+    }
+    if (totalTask >= 1000) {
+      newList.add(taskList[4].setAchieved());
+    }
+    return newList;
+  }
+
   static List<Achievement> getList(
       num level, List<Achievement> achievmentList) {
-    if (level == 0) {
-      return achievmentList;
-    } else if (level >= 1 && level < 5) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      return newList;
-    } else if (level >= 5 && level < 10) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      return newList;
-    } else if (level >= 10 && level < 20) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      return newList;
-    } else if (level >= 20 && level < 30) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      return newList;
-    } else if (level >= 30 && level < 40) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      newList[4] = newList[4].setAchieved();
-      return newList;
-    } else if (level >= 40 && level < 50) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      newList[4] = newList[4].setAchieved();
-      newList[5] = newList[5].setAchieved();
-      return newList;
-    } else if (level >= 50 && level < 60) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      newList[4] = newList[4].setAchieved();
-      newList[5] = newList[5].setAchieved();
-      newList[6] = newList[6].setAchieved();
-      return newList;
-    } else if (level >= 60 && level < 70) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      newList[4] = newList[4].setAchieved();
-      newList[5] = newList[5].setAchieved();
-      newList[6] = newList[6].setAchieved();
-      newList[7] = newList[7].setAchieved();
-      return newList;
-    } else if (level >= 70 && level < 80) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      newList[4] = newList[4].setAchieved();
-      newList[5] = newList[5].setAchieved();
-      newList[6] = newList[6].setAchieved();
-      newList[7] = newList[7].setAchieved();
-      newList[8] = newList[8].setAchieved();
-      return newList;
-    } else if (level >= 80 && level < 90) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      newList[4] = newList[4].setAchieved();
-      newList[5] = newList[5].setAchieved();
-      newList[6] = newList[6].setAchieved();
-      newList[7] = newList[7].setAchieved();
-      newList[8] = newList[8].setAchieved();
-      newList[9] = newList[9].setAchieved();
-      return newList;
-    } else if (level >= 90 && level < 100) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      newList[4] = newList[4].setAchieved();
-      newList[5] = newList[5].setAchieved();
-      newList[6] = newList[6].setAchieved();
-      newList[7] = newList[7].setAchieved();
-      newList[8] = newList[8].setAchieved();
-      newList[9] = newList[9].setAchieved();
-      newList[10] = newList[10].setAchieved();
-      return newList;
-    } else if (level >= 100) {
-      List<Achievement> newList = achievmentList;
-      newList[0] = newList[0].setAchieved();
-      newList[1] = newList[1].setAchieved();
-      newList[2] = newList[2].setAchieved();
-      newList[3] = newList[3].setAchieved();
-      newList[4] = newList[4].setAchieved();
-      newList[5] = newList[5].setAchieved();
-      newList[6] = newList[6].setAchieved();
-      newList[7] = newList[7].setAchieved();
-      newList[8] = newList[8].setAchieved();
-      newList[9] = newList[9].setAchieved();
-      newList[10] = newList[10].setAchieved();
-      newList[11] = newList[11].setAchieved();
-      return newList;
-    } else {
-      return achievmentList;
+    List<Achievement> newList = [];
+    if (level >= 1) {
+      newList.add(achievmentList[0].setAchieved());
     }
+    if (level >= 5) {
+      newList.add(achievmentList[1].setAchieved());
+    }
+    if (level >= 10) {
+      newList.add(achievmentList[2].setAchieved());
+    }
+    if (level >= 20) {
+      newList.add(achievmentList[3].setAchieved());
+    }
+    if (level >= 30) {
+      newList.add(achievmentList[4].setAchieved());
+    }
+    if (level >= 40) {
+      newList.add(achievmentList[5].setAchieved());
+    }
+    if (level >= 50) {
+      newList.add(achievmentList[6].setAchieved());
+    }
+    if (level >= 60) {
+      newList.add(achievmentList[7].setAchieved());
+    }
+    if (level >= 70) {
+      newList.add(achievmentList[8].setAchieved());
+    }
+    if (level >= 80) {
+      newList.add(achievmentList[9].setAchieved());
+    }
+    if (level >= 900) {
+      newList.add(achievmentList[10].setAchieved());
+    }
+    if (level >= 100) {
+      newList.add(achievmentList[11].setAchieved());
+    }
+    return newList;
+  }
+
+  static List<Achievement> getFocusModeList(
+      num session, List<Achievement> focusModeList) {
+    List<Achievement> newList = [];
+    if (session > 0) {
+      newList.add(focusModeList[0].setAchieved());
+    }
+    if (session >= 10) {
+      newList.add(focusModeList[1].setAchieved());
+    }
+    if (session >= 100) {
+      newList.add(focusModeList[2].setAchieved());
+    }
+    if (session >= 500) {
+      newList.add(focusModeList[3].setAchieved());
+    }
+    if (session >= 1000) {
+      newList.add(focusModeList[4].setAchieved());
+    }
+    return newList;
+  }
+
+  static List<Achievement> getLoginStreakList(
+      num loginDays, List<Achievement> loginStreakList) {
+    List<Achievement> newList = [];
+    if (loginDays >= 100) {
+      newList.add(loginStreakList[0].setAchieved());
+    }
+    if (loginDays >= 500) {
+      newList.add(loginStreakList[1].setAchieved());
+    }
+    if (loginDays >= 1000) {
+      newList.add(loginStreakList[2].setAchieved());
+    }
+    return newList;
+  }
+
+  static List<Achievement> getHiddenList(
+      num totalFriends, List<Achievement> hiddenList) {
+    List<Achievement> newList = [];
+    if (totalFriends >= 20) {
+      newList.add(hiddenList[0].setAchieved());
+    }
+    return newList;
   }
 }

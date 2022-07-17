@@ -5,6 +5,7 @@ class UserModel {
   String? firstName;
   String? lastName;
   int registrationDate;
+  String title;
 
   UserModel(
       {this.imageBase64,
@@ -12,7 +13,8 @@ class UserModel {
       this.email,
       this.firstName,
       this.lastName,
-      this.registrationDate = 0});
+      this.registrationDate = 0,
+      this.title = ''});
 
   // receiving data from server
   factory UserModel.fromMap(map) {
@@ -22,7 +24,8 @@ class UserModel {
         firstName: map['firstName'],
         lastName: map['lastName'],
         registrationDate: map['registrationDate'],
-        imageBase64: map['imagePath']);
+        imageBase64: map['imagePath'],
+        title: map['title']);
   }
 
   // sending data to server
@@ -33,7 +36,8 @@ class UserModel {
       'firstName': firstName,
       'lastName': lastName,
       'registrationDate': registrationDate,
-      'imagePath': imageBase64
+      'imagePath': imageBase64,
+      'title': title
     };
   }
 }

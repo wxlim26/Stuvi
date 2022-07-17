@@ -1,6 +1,8 @@
+import 'package:STUVI_app/Screens/leaderboard_page.dart';
 import 'package:STUVI_app/model/user_friend.dart';
 import 'package:STUVI_app/model/user_friends.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
+import 'package:STUVI_app/widget/delete_friends_widget.dart';
 import 'package:STUVI_app/widget/friend_tile_display.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -99,6 +101,53 @@ class _SocialsPageState extends State<SocialsPage> {
           size: 25,
         ),
       ),
+      actions: [
+        IconButton(
+          color: Colors.black,
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => LeaderBoardPage(
+                        userFriends: userFriend, loggedInUser: loggedInUser))));
+          }, //Add pages
+          icon: Icon(
+            Icons.emoji_events,
+            size: 25,
+          ),
+        ),
+        IconButton(
+          color: Colors.black,
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20),
+                  ),
+                ),
+                title: Text(
+                  'Delete Friends',
+                  textAlign: TextAlign.center,
+                  style:
+                      TextStyle(fontFamily: 'OxygenBold', color: Colors.black),
+                ),
+                content: DeleteFriendsWidget(
+                    friendList: friendList,
+                    onDeleteFriends: (List<String> userIds) {
+                      deleteFriend(userIds);
+                      Navigator.pop(context);
+                    }),
+              ),
+            );
+          }, //Add pages
+          icon: Icon(
+            CupertinoIcons.ellipsis,
+            size: 25,
+          ),
+        )
+      ],
     );
 
     final requestedText = Padding(
@@ -134,8 +183,9 @@ class _SocialsPageState extends State<SocialsPage> {
                 status: status,
                 onSuccessfullyRequest: () => acceptFriendRequest(index),
                 onRejectedRequest: () => rejectFriendRequest(index),
-                requestedPersonID: pendingList[index].requestedID!,
-                loggedinpersonID: loggedInUser.uid!,
+                requestedPersonID: pendingList[index].requestedID,
+                loggedinpersonID:
+                    loggedInUser.uid != null ? loggedInUser.uid! : "",
               );
             },
             separatorBuilder: (context, index) => SizedBox(height: 20),
@@ -173,8 +223,8 @@ class _SocialsPageState extends State<SocialsPage> {
             status: 'ACCEPTED',
             onSuccessfullyRequest: getUserFriends,
             onRejectedRequest: () => rejectFriendRequest(index),
-            requestedPersonID: friendList[index].requestedID!,
-            loggedinpersonID: loggedInUser.uid!,
+            requestedPersonID: friendList[index].requestedID,
+            loggedinpersonID: loggedInUser.uid != null ? loggedInUser.uid! : "",
           );
         },
         separatorBuilder: (context, index) => SizedBox(height: 20),
@@ -239,9 +289,9 @@ class _SocialsPageState extends State<SocialsPage> {
         .collection("userFriends")
         .doc(loggedInUser.uid)
         .set(newUserFriend.toMap());
-    _firestore.collection("userFriends").doc(user!.uid).get().then(
-      ((value) async {
-        UserFriends otherFriendList = UserFriends.fromMap(value.data());
+    _firestore.collection("userFriends").doc(friendID).get().then(
+      ((val) async {
+        UserFriends otherFriendList = UserFriends.fromMap(val.data());
         otherFriendList.friendList = otherFriendList.friendList
             .where((val) => val.uid != loggedInUser.uid)
             .toList();
@@ -268,7 +318,7 @@ class _SocialsPageState extends State<SocialsPage> {
         .doc(loggedInUser.uid)
         .set(newUserFriend.toMap());
 
-    _firestore.collection("userFriends").doc(user!.uid).get().then(
+    _firestore.collection("userFriends").doc(newPendingList[i].uid).get().then(
       ((value) async {
         UserFriends otherFriendList = UserFriends.fromMap(value.data());
         otherFriendList.friendList = otherFriendList.friendList.map((val) {
@@ -284,6 +334,38 @@ class _SocialsPageState extends State<SocialsPage> {
         getUserFriends();
       }),
     );
+  }
+
+  void deleteFriend(List<String> userIDs) async {
+    List<UserFriend> newFriendList =
+        friendList.where((element) => !userIDs.contains(element.uid)).toList();
+
+    List<UserFriend> newList = [];
+    newList.addAll(newFriendList);
+    newList.addAll(pendingList);
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    UserFriends newUserFriend = userFriend;
+    newUserFriend.friendList = newList;
+    await _firestore
+        .collection("userFriends")
+        .doc(loggedInUser.uid)
+        .set(newUserFriend.toMap());
+
+    userIDs.forEach((element) {
+      _firestore.collection("userFriends").doc(element).get().then(
+        ((value) async {
+          UserFriends otherFriendList = UserFriends.fromMap(value.data());
+          otherFriendList.friendList = otherFriendList.friendList
+              .where((val) => val.uid != loggedInUser.uid)
+              .toList();
+          await _firestore
+              .collection("userFriends")
+              .doc(element)
+              .set(otherFriendList.toMap());
+          getUserFriends();
+        }),
+      );
+    });
   }
 
   Future<void> _refresh() {

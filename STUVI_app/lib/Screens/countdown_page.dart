@@ -138,11 +138,12 @@ class _CountdownPageState extends State<CountdownPage> {
     );
 
     final line = Padding(
-        padding: EdgeInsets.only(left: 40, right: 40),
-        child: Divider(
-          color: Colors.white,
-          thickness: 1,
-        ));
+      padding: EdgeInsets.only(left: 40, right: 40),
+      child: Divider(
+        color: Colors.white,
+        thickness: 1,
+      ),
+    );
 
     int expEarned = (duration.inSeconds / 3600).floor() * 100 +
         (duration.inSeconds / 60).floor() * 10;

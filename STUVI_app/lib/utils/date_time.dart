@@ -35,4 +35,12 @@ class DateTimeUtil {
   static DateTime getDate(date) {
     return DateTime(date.year, date.month, date.day);
   }
+
+  static DateTime getYesterday(date) {
+    return DateTime(date.year, date.month, date.day - 1);
+  }
+
+  static DateTime getEndDate(date) {
+    return DateTime(date.year, date.month, date.day, 23, 59, 59);
+  }
 }
