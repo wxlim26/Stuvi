@@ -1,4 +1,5 @@
 import 'package:STUVI_app/model/user_friend.dart';
+import 'package:STUVI_app/model/user_friends.dart';
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,13 +40,18 @@ class _SearchState extends State<Search> {
 
   TextFormField buildSearchField() {
     return TextFormField(
+      maxLines: 1,
       controller: searchController,
       decoration: InputDecoration(
-        hintText: 'Search for a friend...',
+        hintText: 'Search for a friend',
+        hintStyle: TextStyle(color: Color(0xFF808080)),
         filled: true,
-        prefixIcon: Icon(
-          Icons.search,
-          size: 28.0,
+        fillColor: Color(0xFFEBEBEB),
+        prefixIcon: Icon(Icons.search),
+        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(width: 0, style: BorderStyle.none),
         ),
       ),
       validator: (value) {
@@ -59,14 +65,24 @@ class _SearchState extends State<Search> {
 
   addingFriend(UserModel friend) async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    List existingList = [];
+    List<UserFriend> existingList = [];
     await _firestore
         .collection("userFriends")
         .doc(loggedInUser.uid)
         .get()
         .then(((value) {
-      existingList = value["friendList"];
+      existingList = UserFriends.fromMap(value.data()).friendList;
     }));
+
+    bool isExist = existingList
+        .where((element) => element.uid == friend.uid)
+        .toList()
+        .isNotEmpty;
+
+    if (isExist) {
+      Fluttertoast.showToast(msg: 'Friend request already received from User');
+      return;
+    }
 
     if (friend.uid != loggedInUser.uid) {
       await _firestore.collection("userFriends").doc(loggedInUser.uid).update({
@@ -89,12 +105,12 @@ class _SearchState extends State<Search> {
               .toMap()
         ]),
       });
-      Fluttertoast.showToast(msg: 'Friend Successfully added');
+      Fluttertoast.showToast(msg: 'Friend request sent');
       widget.onSuccessfullyRequest();
     } else if (friend.uid == loggedInUser.uid) {
-      Fluttertoast.showToast(msg: 'Cannot add yourself');
+      Fluttertoast.showToast(msg: 'Unable to add yourself');
     } else {
-      Fluttertoast.showToast(msg: 'Friend is already added');
+      Fluttertoast.showToast(msg: 'User is already a friend');
     }
   }
 
@@ -133,22 +149,35 @@ class _SearchState extends State<Search> {
   }
 
   // ADD FRIEND BUTTON
-  Widget buildSearchButton() => SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Color(0xFF3FC5F0)),
-          ),
-          onPressed: () {
-            if (searchController.text.isEmpty) {
-              Fluttertoast.showToast(msg: 'Enter valid UID');
-            } else {
-              setState(() {
+  Widget buildSearchButton() => InkWell(
+        onTap: () {
+          if (searchController.text.isEmpty) {
+            Fluttertoast.showToast(msg: 'Enter valid UID');
+          } else {
+            setState(
+              () {
                 handleSearch();
-              });
-            }
-          }, // QUERY
-          child: Text('Add Friend', style: GoogleFonts.oxygen()),
+              },
+            );
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color(0xFF31AFE1),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          width: MediaQuery.of(context).size.width * 0.2,
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'Send',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Oxygen',
+                color: Colors.white,
+              ),
+            ),
+          ),
         ),
       );
 
@@ -181,11 +210,17 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
         title: Text(
-          'Add Friend',
+          'Send Friend Request',
+          textAlign: TextAlign.center,
           style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontFamily: 'OxygenBold',
+            fontSize: 20,
           ),
         ),
         content: addFriend(),

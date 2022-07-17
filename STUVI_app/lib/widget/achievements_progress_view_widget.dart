@@ -1,9 +1,17 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:STUVI_app/Achievements/achievement.dart';
 
 class AchievementsProgressView extends StatelessWidget {
+  final double imageSize;
   final List<Achievement> achievements;
-  const AchievementsProgressView({Key? key, required this.achievements})
+  final Function? onTapCallback;
+  const AchievementsProgressView(
+      {Key? key,
+      required this.onTapCallback,
+      required this.achievements,
+      required this.imageSize})
       : super(key: key);
 
   @override
@@ -11,11 +19,15 @@ class AchievementsProgressView extends StatelessWidget {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Wrap(
-        alignment: WrapAlignment.spaceEvenly,
+        alignment: WrapAlignment.start,
         runSpacing: 5.0,
         spacing: 5.0,
         children: achievements
-            .map((ach) => AchievementProgressView(achievement: ach))
+            .map((ach) => AchievementProgressView(
+                  achievement: ach,
+                  imageSize: imageSize,
+                  onTapCallback: onTapCallback,
+                ))
             .toList(),
       ),
     );
@@ -24,8 +36,14 @@ class AchievementsProgressView extends StatelessWidget {
 
 class AchievementProgressView extends StatelessWidget {
   final Achievement achievement;
-  const AchievementProgressView({Key? key, required this.achievement})
-      : super(key: key);
+  final double imageSize;
+  final Function? onTapCallback;
+  const AchievementProgressView({
+    Key? key,
+    required this.achievement,
+    required this.imageSize,
+    required this.onTapCallback,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,40 +57,45 @@ class AchievementProgressView extends StatelessWidget {
               */
               InkWell(
                 onTap: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (context) => Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        new SimpleDialog(
-                          title: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Achievement Unlocked'),
-                              ]),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25)),
-                          children: [
-                            SizedBox(
-                              height: 150,
-                              child: Image.asset(achievement.iconPath,
-                                  fit: BoxFit.contain),
-                            ),
-                            SizedBox(height: 5),
-                            Row(
+                  if (onTapCallback != null) {
+                    onTapCallback!(achievement.name);
+                    Navigator.pop(context);
+                  } else {
+                    await showDialog(
+                      context: context,
+                      builder: (context) => Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          new SimpleDialog(
+                            title: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [Text('${achievement.condition}')]),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
+                                children: [
+                                  Text('Achievement Unlocked'),
+                                ]),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25)),
+                            children: [
+                              SizedBox(
+                                height: 150,
+                                child: Image.asset(achievement.iconPath,
+                                    fit: BoxFit.contain),
+                              ),
+                              SizedBox(height: 5),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [Text('${achievement.condition}')]),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
                 child: Ink(
-                  height: 100,
+                  height: imageSize,
                   child: Image.asset(achievement.iconPath, fit: BoxFit.contain),
                 ),
               ),

@@ -72,11 +72,15 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
 
     final friendStat = getFriendStats(widget.uid);
 
-    final changeStatus = Column(children: <Widget>[
+    String firstName =
+        friendProfile.firstName != null ? friendProfile.firstName! : "";
+
+    String lastName =
+        friendProfile.lastName != null ? friendProfile.lastName![0] : "";
+
+    final changeRequestStatus = Column(children: <Widget>[
       Text(
-        'Friend request from' +
-            '\n' +
-            '${friendProfile.firstName! + "" + friendProfile.lastName![0]}',
+        'Friend request from' + '\n' + '${firstName + "" + lastName}',
         textAlign: TextAlign.center,
       ),
       SizedBox(height: 8),
@@ -106,6 +110,44 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
             },
             child: Text(
               'DECLINE',
+              style: TextStyle(
+                  color: Colors.red, fontFamily: 'OxygenBold', fontSize: 15),
+            ),
+          ),
+        ],
+      ),
+    ]);
+
+    final cancelRequestStatus = Column(children: <Widget>[
+      Text(
+        'Cancel friend request to' + '\n' + '${firstName + "" + lastName}',
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(height: 8),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () => {
+              widget.onRejectedRequest(),
+              Navigator.pop(context),
+            },
+            child: Text(
+              'CANCEL',
+              style: TextStyle(
+                  fontFamily: 'OxygenBold',
+                  color: Color(0xFF31AFE1),
+                  fontSize: 15),
+            ),
+          ),
+          SizedBox(width: 15),
+          GestureDetector(
+            onTap: () => {
+              Navigator.pop(context),
+            },
+            child: Text(
+              'EXIT',
               style: TextStyle(
                   color: Colors.red, fontFamily: 'OxygenBold', fontSize: 15),
             ),
@@ -174,6 +216,8 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
                               : Container(
                                   height: 300,
                                   child: AchievementsProgressView(
+                                    onTapCallback: null,
+                                    imageSize: 120,
                                     achievements: Achievement.getList(
                                         //level!
                                         level,
@@ -202,8 +246,8 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
                           fontFamily: 'OxygenBold', color: Colors.black),
                     ),
                     content: widget.requestedPersonID == widget.loggedinpersonID
-                        ? Container()
-                        : changeStatus,
+                        ? cancelRequestStatus
+                        : changeRequestStatus,
                   ),
                 );
               }

@@ -25,14 +25,25 @@ class FirebaseApi {
       .snapshots()
       .transform(Utils.transformer(Todo.fromJson));
 
+  static Future<QuerySnapshot<Map<String, dynamic>>> getAllTodos(String uid) =>
+      FirebaseFirestore.instance
+          .collection('todo')
+          .where('uid', isEqualTo: uid)
+          .get();
+
+  static Future<QuerySnapshot<Map<String, dynamic>>> getTodos(
+          String uid, int date) =>
+      FirebaseFirestore.instance
+          .collection('todo')
+          .where('uid', isEqualTo: uid)
+          .where('date', isEqualTo: date)
+          .get();
+
   static Stream<List<Todo>> readTodosByDateAndStatus(String uid, int date) =>
       FirebaseFirestore.instance
           .collection('todo')
           .where('uid', isEqualTo: uid)
           .where('date', isEqualTo: date)
-          // TODO: ADD FIRESTORE INDEX FOR THIS 2 TO MAKE IT WORKS
-          // .orderBy('hour')
-          // .orderBy('minute')
           .snapshots()
           .transform(Utils.transformer(Todo.fromJson));
 

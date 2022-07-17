@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:STUVI_app/API/firebase_api.dart';
+import 'package:STUVI_app/Screens/settings_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
@@ -25,14 +27,28 @@ class _ProfilePageState extends State<ProfilePage> {
   num? level;
   num? xp;
   var image;
+  int totalTask = 0;
 
   renderImage() {
     return ClipOval(
       child: Container(
         child: SizedBox(
-            width: 120,
-            height: 120,
-            child: Image.memory(image, fit: BoxFit.cover)),
+          width: 120,
+          height: 120,
+          child: image != null && image != ''
+              ? Image.memory(image, fit: BoxFit.cover)
+              : CircleAvatar(
+                  radius: 20.0,
+                  child: Text(
+                    '${initials!}',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+        ),
       ),
     );
   }
@@ -49,7 +65,8 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         initials = loggedInUser.firstName![0] + loggedInUser.lastName![0];
         initials = initials!.toUpperCase();
-        if (loggedInUser.imageBase64 != null) {
+        if (loggedInUser.imageBase64 != null &&
+            loggedInUser.imageBase64!.isNotEmpty) {
           image = base64Decode(loggedInUser.imageBase64!);
         }
       });
@@ -66,6 +83,12 @@ class _ProfilePageState extends State<ProfilePage> {
         xp = stats.exp!;
       });
     });
+
+    FirebaseApi.getAllTodos(user!.uid).then((QuerySnapshot value) {
+      setState(() {
+        totalTask = value.docs.length;
+      });
+    });
   }
 
   @override
@@ -74,31 +97,62 @@ class _ProfilePageState extends State<ProfilePage> {
     //var lastName = loggedInUser.lastName![0];
     //var initials = 'firstName + lastName';
 
+    final appBar = AppBar(
+      backgroundColor: Colors.white,
+      title: Text(
+        "${loggedInUser.firstName} ${loggedInUser.lastName}",
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.settings,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: ((context) => SettingsPage()),
+              ),
+            );
+          },
+          iconSize: 25,
+        ),
+      ],
+      centerTitle: true,
+    );
+
     bool isLoading = false;
     if (initials == null || level == null) {
       isLoading = true;
     }
+
+    Widget renderTitle() {
+      return Text(
+        loggedInUser.title.isNotEmpty
+            ? 'Title: ${loggedInUser.title}'
+            : '', // Replace with ENUM
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+        ),
+      );
+    }
+
     return isLoading
         ? Container(
             child: CircularProgressIndicator(),
           )
         : Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              title: Text(
-                "${loggedInUser.firstName} ${loggedInUser.lastName}",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              centerTitle: true,
-            ),
+            appBar: appBar,
             body: ListView(
               children: <Widget>[
                 Container(
-                  height: 300,
+                  height: 250,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [Color(0xFF2A93D5), Color(0XFF37CAEC)],
@@ -115,13 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        'Title: Recruit', // Replace with ENUM
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
+                      renderTitle(),
                       SizedBox(height: 10),
                       Wrap(
                         spacing: 210,
@@ -148,22 +196,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: LinearPercentIndicator(
                           percent: (xp!.toDouble() - (level! * 500)) / 500,
                           //percent: 300 / 500,
-                          progressColor: Colors.greenAccent,
+                          progressColor: Color(0xFF9FE2BF),
                           backgroundColor: Colors.white,
                           lineHeight: 10.0,
                           barRadius: const Radius.circular(15),
                         ),
-                      ),
-                      SizedBox(height: 10.0),
-                      ActionChip(
-                        backgroundColor: Color(0xFF3FC5F0),
-                        label: Text(
-                          "Logout",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        onPressed: () {
-                          logout(context);
-                        },
                       ),
                     ],
                   ),
@@ -181,20 +218,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 Container(
                   height: 300,
                   child: AchievementsProgressView(
+                    onTapCallback: null,
+                    imageSize: 120,
                     achievements: Achievement.getList(
-                        //level!
-                        level!,
-                        Achievement.levelAchievements()),
+                        level!, Achievement.levelAchievements()),
+                  ),
+                ),
+                Container(
+                  height: 300,
+                  child: AchievementsProgressView(
+                    onTapCallback: null,
+                    imageSize: 120,
+                    achievements: Achievement.getListTask(
+                        totalTask, Achievement.getTaskLevel()),
                   ),
                 )
               ],
             ),
           );
-  }
-
-  Future<void> logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: ((context) => LoginPage())));
   }
 }
