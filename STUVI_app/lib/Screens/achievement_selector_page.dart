@@ -206,7 +206,10 @@ class _AchievementSelectorPageState extends State<AchievementSelectorPage> {
                 },
                 imageSize: 120,
                 achievements: Achievement.getHiddenList(
-                    totalFriends, Achievement.getHiddenAchievements()),
+                    totalFriends,
+                    userStatsModel.breakStreak,
+                    userStatsModel.haveBecameFirst,
+                    Achievement.getHiddenAchievements()),
               )
             ],
           ),

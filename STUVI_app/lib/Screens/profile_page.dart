@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:STUVI_app/API/firebase_api.dart';
 import 'package:STUVI_app/Screens/settings_page.dart';
+import 'package:STUVI_app/model/user_friends.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
@@ -28,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
   num? xp;
   var image;
   int totalTask = 0;
+  int totalFriends = 0;
 
   renderImage() {
     return ClipOval(
@@ -89,6 +91,21 @@ class _ProfilePageState extends State<ProfilePage> {
         totalTask = value.docs.length;
       });
     });
+
+    FirebaseFirestore.instance
+        .collection("userFriends")
+        .doc(user!.uid)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (mounted) {
+        UserFriends userFriends = UserFriends.fromMap(doc.data());
+        setState(() {
+          totalFriends = userFriends.friendList
+              .where((element) => element.status == 'ACCEPTED')
+              .length;
+        });
+      }
+    });
   }
 
   @override
@@ -131,6 +148,27 @@ class _ProfilePageState extends State<ProfilePage> {
       isLoading = true;
     }
 
+    final line = Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Divider(
+        color: Colors.black,
+        thickness: 0.5,
+      ),
+    );
+
+    Widget renderLabel(String text) {
+      return Container(
+        padding: EdgeInsets.only(left: 24),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontFamily: 'Oxygen',
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
+
     Widget renderTitle() {
       return Text(
         loggedInUser.title.isNotEmpty
@@ -152,7 +190,7 @@ class _ProfilePageState extends State<ProfilePage> {
             body: ListView(
               children: <Widget>[
                 Container(
-                  height: 250,
+                  height: 230,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [Color(0xFF2A93D5), Color(0XFF37CAEC)],
@@ -216,23 +254,49 @@ class _ProfilePageState extends State<ProfilePage> {
                 Divider(thickness: 2),
                 SizedBox(height: 10),
                 Container(
-                  height: 300,
-                  child: AchievementsProgressView(
-                    onTapCallback: null,
-                    imageSize: 120,
-                    achievements: Achievement.getList(
-                        level!, Achievement.levelAchievements()),
-                  ),
+                  height: 350,
+                  child: SingleChildScrollView(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      renderLabel('Level'),
+                      AchievementsProgressView(
+                        onTapCallback: null,
+                        imageSize: 120,
+                        achievements: Achievement.getList(
+                            level!, Achievement.levelAchievements()),
+                      ),
+                      line,
+                      renderLabel('Tasks'),
+                      AchievementsProgressView(
+                          onTapCallback: null,
+                          imageSize: 120,
+                          achievements: Achievement.getListTask(
+                              totalTask, Achievement.getTaskLevel())),
+                      line,
+                      renderLabel('Focus Mode'),
+                      AchievementsProgressView(
+                        onTapCallback: null,
+                        imageSize: 120,
+                        achievements: Achievement.getFocusModeList(
+                            this.stats.totalSessions != null
+                                ? this.stats.totalSessions!
+                                : 0,
+                            Achievement.getFocusModeAchievements()),
+                      ),
+                      line,
+                      renderLabel('Hidden'),
+                      AchievementsProgressView(
+                          onTapCallback: null,
+                          imageSize: 120,
+                          achievements: Achievement.getHiddenList(
+                              totalFriends,
+                              this.stats.breakStreak,
+                              this.stats.haveBecameFirst,
+                              Achievement.getHiddenAchievements())),
+                    ],
+                  )),
                 ),
-                Container(
-                  height: 300,
-                  child: AchievementsProgressView(
-                    onTapCallback: null,
-                    imageSize: 120,
-                    achievements: Achievement.getListTask(
-                        totalTask, Achievement.getTaskLevel()),
-                  ),
-                )
               ],
             ),
           );

@@ -156,6 +156,44 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
       ),
     ]);
 
+    final unblockRequestStatus = Column(children: <Widget>[
+      Text(
+        'Cancel friend request to' + '\n' + '${firstName + "" + lastName}',
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(height: 8),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () => {
+              widget.onRejectedRequest(),
+              Navigator.pop(context),
+            },
+            child: Text(
+              'UNBLOCK',
+              style: TextStyle(
+                  fontFamily: 'OxygenBold',
+                  color: Color(0xFF31AFE1),
+                  fontSize: 15),
+            ),
+          ),
+          SizedBox(width: 15),
+          GestureDetector(
+            onTap: () => {
+              Navigator.pop(context),
+            },
+            child: Text(
+              'EXIT',
+              style: TextStyle(
+                  color: Colors.red, fontFamily: 'OxygenBold', fontSize: 15),
+            ),
+          ),
+        ],
+      ),
+    ]);
+
     if (friendProfile == null) {
       isLoading = true;
     }
@@ -227,6 +265,25 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
                         ],
                       ),
                     ],
+                  ),
+                );
+              } else if (widget.status == 'BLOCKED') {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    insetPadding: EdgeInsets.only(top: 290, bottom: 290),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                    ),
+                    title: Text(
+                      'Unblock User',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: 'OxygenBold', color: Colors.black),
+                    ),
+                    content: unblockRequestStatus,
                   ),
                 );
               } else {

@@ -77,6 +77,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       stats.currentStreakTask = 0;
       stats.longestStreakTask = 0;
       stats.lastDateStreak = stats.secondsSpendLastRecordedDate;
+      stats.breakStreak = false;
 
       //writing values for userFriends collection
       userFriends.uid = user.uid;
