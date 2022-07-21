@@ -1,3 +1,5 @@
+import 'package:STUVI_app/model/user_friends.dart';
+import 'package:STUVI_app/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
@@ -13,6 +15,43 @@ class UserStats {
     final docUserStats =
         FirebaseFirestore.instance.collection('UserStats').doc(userStats.uid);
 
+    if (!userStats.haveBecameFirst) {
+      bool stillNotFirst = false;
+      DocumentSnapshot<Map<String, dynamic>> userFriend =
+          await FirebaseFirestore.instance
+              .collection("userFriends")
+              .doc(userStats.uid)
+              .get();
+
+      UserFriends userFriends = UserFriends.fromMap(userFriend.data());
+      List<String?> friendList =
+          userFriends.friendList.map((e) => e.uid).toList();
+
+      for (int i = 0; i < friendList.length; i++) {
+        DocumentSnapshot<Map<String, dynamic>> friendData =
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(friendList[i])
+                .get();
+
+        UserModel friendUser = UserModel.fromMap(friendData.data());
+        DocumentSnapshot<Map<String, dynamic>> friendStatsData =
+            await FirebaseFirestore.instance
+                .collection("UserStats")
+                .doc(friendUser.uid)
+                .get();
+
+        UserStatsModel userStatsModel =
+            UserStatsModel.fromMap(friendStatsData.data());
+        if (userStats.exp! < userStatsModel.exp!) {
+          stillNotFirst = true;
+        }
+      }
+
+      if (!stillNotFirst) {
+        userStats.haveBecameFirst = true;
+      }
+    }
     await docUserStats.update(userStats.toMap());
   }
 
@@ -52,6 +91,7 @@ class UserStats {
 
     if (shouldResetStreak) {
       userStats.focusModeStreak = 0;
+      userStats.breakStreak = true;
     }
 
     final docUserStats =

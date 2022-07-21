@@ -185,6 +185,21 @@ class Achievement {
           iconPath: 'assets/achievements_icon/26.png',
           condition: 'Hello Popular Person',
           achieved: false),
+      Achievement(
+          name: 'Day Off',
+          iconPath: 'assets/achievements_icon/27.png',
+          condition: "It's always good to have a break!",
+          achieved: false),
+      Achievement(
+          name: 'Champion',
+          iconPath: 'assets/achievements_icon/29.png',
+          condition: "It's always good to have a break!",
+          achieved: false),
+      Achievement(
+          name: 'Champion',
+          iconPath: 'assets/achievements_icon/29.png',
+          condition: "Congratulations, how does it feel to be at the top?",
+          achieved: false),
     ];
   }
 
@@ -287,11 +302,17 @@ class Achievement {
     return newList;
   }
 
-  static List<Achievement> getHiddenList(
-      num totalFriends, List<Achievement> hiddenList) {
+  static List<Achievement> getHiddenList(num totalFriends, bool breakStreak,
+      bool haveBecameTheFirst, List<Achievement> hiddenList) {
     List<Achievement> newList = [];
     if (totalFriends >= 20) {
       newList.add(hiddenList[0].setAchieved());
+    }
+    if (breakStreak) {
+      newList.add(hiddenList[1].setAchieved());
+    }
+    if (haveBecameTheFirst) {
+      newList.add(hiddenList[3].setAchieved());
     }
     return newList;
   }

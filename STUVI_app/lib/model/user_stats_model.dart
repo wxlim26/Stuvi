@@ -8,6 +8,8 @@ class UserStatsModel {
   num? longestStreakTask;
   num? currentStreakTask;
   num? lastDateStreak;
+  bool breakStreak;
+  bool haveBecameFirst;
 
   UserStatsModel(
       {this.uid,
@@ -18,7 +20,9 @@ class UserStatsModel {
       this.focusModeStreak,
       this.longestStreakTask,
       this.currentStreakTask,
-      this.lastDateStreak});
+      this.lastDateStreak,
+      this.breakStreak = false,
+      this.haveBecameFirst = false});
 
   // receiving data from server
   factory UserStatsModel.fromMap(map) {
@@ -31,7 +35,9 @@ class UserStatsModel {
         focusModeStreak: map['focusModeStreak'],
         longestStreakTask: map['longestStreakTask'],
         currentStreakTask: map['currentStreakTask'],
-        lastDateStreak: map['lastDateStreak']);
+        lastDateStreak: map['lastDateStreak'],
+        breakStreak: map['breakStreak'],
+        haveBecameFirst: map['haveBecameFirst']);
   }
 
   // sending data to server
@@ -46,6 +52,8 @@ class UserStatsModel {
       'longestStreakTask': longestStreakTask,
       'currentStreakTask': currentStreakTask,
       'lastDateStreak': lastDateStreak,
+      'breakStreak': breakStreak,
+      'haveBecameFirst': haveBecameFirst
     };
   }
 }

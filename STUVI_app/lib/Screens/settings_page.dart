@@ -1,3 +1,4 @@
+import 'package:STUVI_app/Screens/blocked_user_page.dart';
 import 'package:STUVI_app/Screens/edit_profile_page.dart';
 import 'package:STUVI_app/Screens/home_screen.dart';
 import 'package:STUVI_app/Screens/profile_page.dart';
@@ -141,7 +142,9 @@ class _SettingsPageState extends State<SettingsPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: ((context) => HomeScreen()), //shows blocked user
+              builder: ((context) => BlockedUserPage(
+                    uid: user!.uid,
+                  )), //shows blocked user
             ),
           );
         },
