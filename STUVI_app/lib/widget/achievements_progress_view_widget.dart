@@ -86,7 +86,10 @@ class AchievementProgressView extends StatelessWidget {
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [Text('${achievement.condition}')]),
+                                  children: [
+                                    Text('${achievement.condition}',
+                                        textAlign: TextAlign.center)
+                                  ]),
                             ],
                           ),
                         ],

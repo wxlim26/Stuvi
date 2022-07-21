@@ -103,13 +103,13 @@ class Achievement {
           name: 'Decennium',
           iconPath: 'assets/achievements_icon/14.png',
           condition:
-              "A day's worth of tasks, but the title says otherwise...keep up the momentum!",
+              "A day's worth of tasks, but the title \n says otherwise...keep up the momentum!",
           achieved: false),
       Achievement(
           name: 'Centenniel',
           iconPath: 'assets/achievements_icon/15.png',
           condition:
-              'You are on your way to beating the age of the oldest person living on earth!',
+              'You are on your way to beating the \n age of the oldest person living on earth!',
           achieved: false),
       Achievement(
           name: 'Quincentenary',
@@ -120,7 +120,7 @@ class Achievement {
           name: 'Millenium',
           iconPath: 'assets/achievements_icon/17.png',
           condition:
-              "Having come so far you now officially hold the title of STUVI's task-maniac",
+              "Having come so far you now \n officially hold the title of STUVI's task-maniac",
           achieved: false),
     ];
   }
@@ -193,12 +193,7 @@ class Achievement {
       Achievement(
           name: 'Champion',
           iconPath: 'assets/achievements_icon/29.png',
-          condition: "It's always good to have a break!",
-          achieved: false),
-      Achievement(
-          name: 'Champion',
-          iconPath: 'assets/achievements_icon/29.png',
-          condition: "Congratulations, how does it feel to be at the top?",
+          condition: "Congratulations, how does \n it feel to be at the top?",
           achieved: false),
     ];
   }
@@ -312,7 +307,7 @@ class Achievement {
       newList.add(hiddenList[1].setAchieved());
     }
     if (haveBecameTheFirst) {
-      newList.add(hiddenList[3].setAchieved());
+      newList.add(hiddenList[2].setAchieved());
     }
     return newList;
   }

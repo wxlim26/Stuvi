@@ -252,6 +252,7 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold))))
                               : Container(
+                                  alignment: Alignment.center,
                                   height: 300,
                                   child: AchievementsProgressView(
                                     onTapCallback: null,
