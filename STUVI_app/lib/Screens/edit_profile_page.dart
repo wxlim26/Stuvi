@@ -1,11 +1,7 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:STUVI_app/Screens/achievement_selector_page.dart';
 import 'package:STUVI_app/Screens/home_screen.dart';
-import 'package:STUVI_app/Screens/login_page.dart';
-import 'package:STUVI_app/model/user_friends.dart';
-import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:STUVI_app/widget/image_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,8 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../model/user_model.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 class EditProfilePage extends StatefulWidget {
   UserModel user;
@@ -47,7 +41,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     firstNameEditingController.text = widget.user.firstName!;
     lastNameEditingController.text = widget.user.lastName!;

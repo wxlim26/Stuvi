@@ -2,13 +2,9 @@ import 'package:STUVI_app/dto/LeaderboardDto.dart';
 import 'package:STUVI_app/model/user_friends.dart';
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
-import 'package:STUVI_app/widget/friend_tile_display.dart';
 import 'package:STUVI_app/widget/friend_tile_leaderboard_display.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../model/user_friend.dart';
 
 class LeaderBoardPage extends StatefulWidget {
   UserFriends userFriends;
@@ -28,7 +24,6 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     FirebaseFirestore.instance
         .collection("UserStats")

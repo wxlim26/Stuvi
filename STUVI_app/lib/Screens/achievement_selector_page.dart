@@ -1,6 +1,5 @@
 import 'package:STUVI_app/API/firebase_api.dart';
 import 'package:STUVI_app/Achievements/achievement.dart';
-import 'package:STUVI_app/dto/LeaderboardDto.dart';
 import 'package:STUVI_app/model/user_friends.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:STUVI_app/widget/achievements_progress_view_widget.dart';
@@ -27,9 +26,10 @@ class _AchievementSelectorPageState extends State<AchievementSelectorPage> {
   UserModel loggedInUser = UserModel();
   int totalTask = 0;
   int totalFriends = 0;
+  bool friendAchievementUnlocked = false;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     FirebaseFirestore.instance
         .collection("users")
@@ -61,9 +61,7 @@ class _AchievementSelectorPageState extends State<AchievementSelectorPage> {
       if (mounted) {
         UserFriends userFriends = UserFriends.fromMap(doc.data());
         setState(() {
-          totalFriends = userFriends.friendList
-              .where((element) => element.status == 'ACCEPTED')
-              .length;
+          friendAchievementUnlocked = userFriends.unlockFriendAchievement!;
         });
       }
     });
@@ -206,7 +204,7 @@ class _AchievementSelectorPageState extends State<AchievementSelectorPage> {
                 },
                 imageSize: 120,
                 achievements: Achievement.getHiddenList(
-                    totalFriends,
+                    friendAchievementUnlocked,
                     userStatsModel.breakStreak,
                     userStatsModel.haveBecameFirst,
                     Achievement.getHiddenAchievements()),

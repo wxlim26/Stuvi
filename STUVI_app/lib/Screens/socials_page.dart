@@ -313,6 +313,13 @@ class _SocialsPageState extends State<SocialsPage> {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
     UserFriends newUserFriend = userFriend;
     newUserFriend.friendList = newList;
+    int totalFriends = newUserFriend.friendList
+        .where((val) => val.status == 'ACCEPTED')
+        .toList()
+        .length;
+    if (totalFriends >= 20) {
+      newUserFriend.unlockFriendAchievement = true;
+    }
     await _firestore
         .collection("userFriends")
         .doc(loggedInUser.uid)
@@ -327,6 +334,13 @@ class _SocialsPageState extends State<SocialsPage> {
           }
           return val;
         }).toList();
+        int totalOtherFriends = otherFriendList.friendList
+            .where((val) => val.status == 'ACCEPTED')
+            .toList()
+            .length;
+        if (totalOtherFriends >= 20) {
+          otherFriendList.unlockFriendAchievement = true;
+        }
         await _firestore
             .collection("userFriends")
             .doc(newPendingList[i].uid)

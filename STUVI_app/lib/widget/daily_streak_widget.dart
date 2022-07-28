@@ -1,7 +1,5 @@
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class DailyStreakWidget extends StatefulWidget {
   final UserStatsModel stats;

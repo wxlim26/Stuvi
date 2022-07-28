@@ -2,16 +2,11 @@ import 'package:STUVI_app/Screens/home_screen.dart';
 import 'package:STUVI_app/model/user_friend.dart';
 import 'package:STUVI_app/model/user_friends.dart';
 import 'package:STUVI_app/model/user_model.dart';
-import 'package:STUVI_app/model/user_stats_model.dart';
-import 'package:STUVI_app/provider/stats.dart';
-import 'package:STUVI_app/provider/todos.dart';
 import 'package:STUVI_app/widget/friend_tile_display.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:provider/provider.dart';
 
 class BlockedUserPage extends StatefulWidget {
   final String uid;

@@ -50,7 +50,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _controller = TextEditingController(

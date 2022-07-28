@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:STUVI_app/API/user_stats.dart';
 import 'package:STUVI_app/Screens/daily_planner_page.dart';
 import 'package:STUVI_app/Screens/view_all_completed_page.dart';
 import 'package:STUVI_app/Screens/view_all_todo_page.dart';
@@ -36,7 +33,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     FirebaseFirestore.instance
         .collection("UserStats")
@@ -56,14 +52,17 @@ class _HomePageState extends State<HomePage> {
       }
 
       DateTime today = DateTimeUtil.getTodayDate();
-      DateTime lastDayCheck = DateTime.fromMillisecondsSinceEpoch(
+      DateTime yesterday = DateTimeUtil.getYesterday(today);
+      DateTime lastDayStreak = DateTime.fromMillisecondsSinceEpoch(
           currentStats.lastDateStreak!.toInt());
-      lastDayCheck = DateTimeUtil.getDate(lastDayCheck);
-      if (today.day != lastDayCheck.day ||
-          today.month != lastDayCheck.month ||
-          today.year != lastDayCheck.year) {
+      lastDayStreak = DateTimeUtil.getDate(lastDayStreak);
+      if (today == yesterday) {
+        setState(() {
+          this.stats = currentStats;
+        });
+      } else if (yesterday == lastDayStreak) {
         FirebaseApi.getTodos(
-                currentStats.uid!, lastDayCheck.toUtc().millisecondsSinceEpoch)
+                currentStats.uid!, lastDayStreak.toUtc().millisecondsSinceEpoch)
             .then((QuerySnapshot value) {
           List<Todo> todos = value.docs
               .map((e) => Todo.fromJson(e.data() as dynamic))
@@ -93,6 +92,13 @@ class _HomePageState extends State<HomePage> {
           });
         });
       } else {
+        currentStats.currentStreakTask = 0;
+        currentStats.lastDateStreak =
+            DateTimeUtil.getDate(today).toUtc().millisecondsSinceEpoch;
+        FirebaseFirestore.instance
+            .collection("UserStats")
+            .doc(user!.uid)
+            .set(currentStats.toMap());
         setState(() {
           this.stats = currentStats;
         });

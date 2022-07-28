@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:STUVI_app/Screens/home_screen.dart';
 import 'package:STUVI_app/Screens/login_page.dart';
@@ -13,8 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../model/user_model.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 class RegistrationPage extends StatefulWidget {
   final VoidCallback onClicked;
@@ -65,6 +62,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       userModel.registrationDate =
           DateTime.now().toUtc().millisecondsSinceEpoch;
       userModel.imageBase64 = imageBase64String;
+      userModel.title = '';
 
       //writing values for user Stats
       stats.uid = user.uid;

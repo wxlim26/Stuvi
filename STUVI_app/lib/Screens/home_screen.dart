@@ -1,7 +1,6 @@
 import 'package:STUVI_app/Screens/countdown_page.dart';
 import 'package:STUVI_app/Screens/home_page.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
-import 'package:STUVI_app/provider/stats.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -30,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

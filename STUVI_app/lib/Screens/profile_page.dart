@@ -1,12 +1,10 @@
 import 'dart:convert';
-
 import 'package:STUVI_app/API/firebase_api.dart';
 import 'package:STUVI_app/Screens/settings_page.dart';
 import 'package:STUVI_app/model/user_friends.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
-import 'package:STUVI_app/Screens/login_page.dart';
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -30,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   var image;
   int totalTask = 0;
   int totalFriends = 0;
+  bool friendAchievementUnlocked = false;
 
   renderImage() {
     return ClipOval(
@@ -100,9 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
       if (mounted) {
         UserFriends userFriends = UserFriends.fromMap(doc.data());
         setState(() {
-          totalFriends = userFriends.friendList
-              .where((element) => element.status == 'ACCEPTED')
-              .length;
+          friendAchievementUnlocked = userFriends.unlockFriendAchievement!;
         });
       }
     });
@@ -148,13 +145,11 @@ class _ProfilePageState extends State<ProfilePage> {
       isLoading = true;
     }
 
-    final line = Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: Divider(
-        color: Colors.black,
-        thickness: 0.5,
-      ),
-    );
+    final Widget line = Container(
+        height: 0.5,
+        margin: EdgeInsets.symmetric(vertical: 10),
+        width: MediaQuery.of(context).size.width,
+        color: Colors.black);
 
     Widget renderLabel(String text) {
       return Container(
@@ -290,7 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           onTapCallback: null,
                           imageSize: 120,
                           achievements: Achievement.getHiddenList(
-                              totalFriends,
+                              friendAchievementUnlocked,
                               this.stats.breakStreak,
                               this.stats.haveBecameFirst,
                               Achievement.getHiddenAchievements())),
