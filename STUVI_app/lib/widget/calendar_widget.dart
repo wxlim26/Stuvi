@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:STUVI_app/Screens/daily_planner_page.dart';
 
 class CalendarWidget extends StatefulWidget {
   final Function(TextEditingController) onShowEmojiKeyboard;
@@ -26,7 +23,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

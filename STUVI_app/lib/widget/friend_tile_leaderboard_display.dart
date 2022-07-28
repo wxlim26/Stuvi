@@ -1,11 +1,6 @@
-import 'package:STUVI_app/Achievements/achievement.dart';
 import 'package:STUVI_app/dto/LeaderboardDto.dart';
-import 'package:STUVI_app/model/user_friends.dart';
-import 'package:STUVI_app/model/user_stats_model.dart';
-import 'package:STUVI_app/widget/achievements_progress_view_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
-import '../model/user_model.dart';
 
 class FriendTileLeaderBoardDisplay extends StatefulWidget {
   final int index;

@@ -1,15 +1,11 @@
 import 'package:STUVI_app/Screens/blocked_user_page.dart';
 import 'package:STUVI_app/Screens/edit_profile_page.dart';
 import 'package:STUVI_app/Screens/home_screen.dart';
-import 'package:STUVI_app/Screens/profile_page.dart';
-import 'package:STUVI_app/model/user_friend.dart';
 import 'package:STUVI_app/model/user_friends.dart';
 import 'package:STUVI_app/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:STUVI_app/Screens/login_page.dart';
 
 class SettingsPage extends StatefulWidget {

@@ -183,7 +183,7 @@ class Achievement {
       Achievement(
           name: 'Socialite',
           iconPath: 'assets/achievements_icon/26.png',
-          condition: 'Hello Popular Person',
+          condition: 'Hello Popular Person...',
           achieved: false),
       Achievement(
           name: 'Day Off',
@@ -297,10 +297,10 @@ class Achievement {
     return newList;
   }
 
-  static List<Achievement> getHiddenList(num totalFriends, bool breakStreak,
-      bool haveBecameTheFirst, List<Achievement> hiddenList) {
+  static List<Achievement> getHiddenList(bool friendAchievementUnlocked,
+      bool breakStreak, bool haveBecameTheFirst, List<Achievement> hiddenList) {
     List<Achievement> newList = [];
-    if (totalFriends >= 20) {
+    if (friendAchievementUnlocked) {
       newList.add(hiddenList[0].setAchieved());
     }
     if (breakStreak) {

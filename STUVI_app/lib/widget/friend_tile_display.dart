@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:STUVI_app/API/firebase_api.dart';
 import 'package:STUVI_app/Achievements/achievement.dart';
 import 'package:STUVI_app/model/user_friends.dart';
 import 'package:STUVI_app/model/user_stats_model.dart';
 import 'package:STUVI_app/widget/achievements_progress_view_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../model/user_model.dart';
 
@@ -38,6 +42,52 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
   String initials = '';
   String fullName = '';
 
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+  UserStatsModel stats = UserStatsModel();
+  num? level;
+  num? xp;
+  var image;
+  int totalTask = 0;
+  int totalFriends = 0;
+  bool friendAchievementUnlocked = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseFirestore.instance
+        .collection("UserStats")
+        .doc(widget.uid)
+        .get()
+        .then((DocumentSnapshot doc) {
+      this.stats = UserStatsModel.fromMap(doc.data());
+      setState(() {
+        level = (stats.exp! / 500).floor();
+        xp = stats.exp!;
+      });
+    });
+
+    FirebaseApi.getAllTodos(widget.uid).then((QuerySnapshot value) {
+      setState(() {
+        totalTask = value.docs.length;
+      });
+    });
+
+    FirebaseFirestore.instance
+        .collection("userFriends")
+        .doc(widget.uid)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (mounted) {
+        UserFriends userFriends = UserFriends.fromMap(doc.data());
+        setState(() {
+          friendAchievementUnlocked = userFriends.unlockFriendAchievement!;
+        });
+      }
+    });
+  }
+
   UserStatsModel getFriendStats(String uid) {
     FirebaseFirestore.instance
         .collection("UserStats")
@@ -69,6 +119,24 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
         });
       }
     }));
+
+    Widget renderLabel(String text) {
+      return Container(
+        child: Text(
+          text,
+          style: TextStyle(
+            fontFamily: 'Oxygen',
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
+
+    final Widget line = Container(
+        height: 0.5,
+        margin: EdgeInsets.symmetric(vertical: 10),
+        width: MediaQuery.of(context).size.width,
+        color: Colors.black);
 
     final friendStat = getFriendStats(widget.uid);
 
@@ -158,7 +226,7 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
 
     final unblockRequestStatus = Column(children: <Widget>[
       Text(
-        'Cancel friend request to' + '\n' + '${firstName + "" + lastName}',
+        'Unblock ' + '${firstName + "" + lastName}',
         textAlign: TextAlign.center,
       ),
       SizedBox(height: 8),
@@ -254,13 +322,62 @@ class _FriendsDisplayState extends State<FriendTileDisplay> {
                               : Container(
                                   alignment: Alignment.center,
                                   height: 300,
-                                  child: AchievementsProgressView(
-                                    onTapCallback: null,
-                                    imageSize: 120,
-                                    achievements: Achievement.getList(
-                                        //level!
-                                        level,
-                                        Achievement.levelAchievements()),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        line,
+                                        renderLabel('Level'),
+                                        line,
+                                        AchievementsProgressView(
+                                          onTapCallback: null,
+                                          imageSize: 120,
+                                          achievements: Achievement.getList(
+                                              level,
+                                              Achievement.levelAchievements()),
+                                        ),
+                                        line,
+                                        renderLabel('Tasks'),
+                                        line,
+                                        AchievementsProgressView(
+                                          onTapCallback: null,
+                                          imageSize: 120,
+                                          achievements: Achievement.getListTask(
+                                            totalTask,
+                                            Achievement.getTaskLevel(),
+                                          ),
+                                        ),
+                                        line,
+                                        renderLabel('Focus Mode'),
+                                        line,
+                                        AchievementsProgressView(
+                                          onTapCallback: null,
+                                          imageSize: 120,
+                                          achievements:
+                                              Achievement.getFocusModeList(
+                                                  this.stats.totalSessions !=
+                                                          null
+                                                      ? this
+                                                          .stats
+                                                          .totalSessions!
+                                                      : 0,
+                                                  Achievement
+                                                      .getFocusModeAchievements()),
+                                        ),
+                                        line,
+                                        renderLabel('Hidden'),
+                                        line,
+                                        AchievementsProgressView(
+                                            onTapCallback: null,
+                                            imageSize: 120,
+                                            achievements:
+                                                Achievement.getHiddenList(
+                                                    friendAchievementUnlocked,
+                                                    this.stats.breakStreak,
+                                                    this.stats.haveBecameFirst,
+                                                    Achievement
+                                                        .getHiddenAchievements()))
+                                      ],
+                                    ),
                                   ),
                                 )
                         ],
